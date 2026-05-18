@@ -83,82 +83,6 @@
     .btn-multiplication { background: linear-gradient(135deg, #27c47a, #159552); }
     .btn-division       { background: linear-gradient(135deg, #a855f7, #7c22d4); }
 
-    /* Add one game page */
-    .game-page {
-      color: #ffffff;
-      gap: 40px;
-      text-align: center;
-    }
-
-    .game-level {
-      font-size: 2rem;
-      font-weight: 800;
-      text-shadow: 0 3px 12px rgba(0,0,0,0.4);
-      letter-spacing: 2px;
-    }
-
-    .game-question {
-      font-size: 2.6rem;
-      font-weight: 700;
-      background: rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 32px 48px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    }
-
-    .answer-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .answer-input {
-      width: 320px;
-      padding: 16px 20px;
-      font-size: 1.6rem;
-      font-weight: 700;
-      text-align: center;
-      border: 3px solid rgba(255,255,255,0.5);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.15);
-      color: #ffffff;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .answer-input::placeholder { color: rgba(255,255,255,0.45); }
-
-    .answer-input:focus {
-      border-color: #ffffff;
-      background: rgba(255,255,255,0.25);
-    }
-
-    .check-btn {
-      padding: 14px 40px;
-      border: none;
-      border-radius: 50px;
-      background: linear-gradient(135deg, #27c47a, #159552);
-      color: #ffffff;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .check-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-    .check-btn:active { transform: translateY(1px); }
-
-    .feedback {
-      font-size: 1.3rem;
-      font-weight: 700;
-      min-height: 1.6em;
-    }
-
-    .feedback.correct { color: #7aff9e; }
-    .feedback.wrong   { color: #ff7a7a; }
-
     /* Addition sub-menu colours */
     .btn-numbersplash  { background: linear-gradient(135deg, #e84393, #c0166f); }
     .btn-speedmath     { background: linear-gradient(135deg, #f4a020, #d07a00); }
@@ -221,9 +145,162 @@
       line-height: 1.7;
     }
 
-    .subject-icon {
-      font-size: 5rem;
+    .subject-icon { font-size: 5rem; }
+
+    /* ── Add One game ── */
+    .game-page {
+      color: #ffffff;
+      gap: 28px;
+      text-align: center;
     }
+
+    .game-level {
+      font-size: 2rem;
+      font-weight: 800;
+      text-shadow: 0 3px 12px rgba(0,0,0,0.4);
+      letter-spacing: 2px;
+    }
+
+    .stopwatch {
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      background: rgba(0,0,0,0.25);
+      border-radius: 14px;
+      padding: 10px 32px;
+      letter-spacing: 2px;
+    }
+
+    .game-question {
+      font-size: 2.6rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 32px 48px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .answer-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .answer-input {
+      width: 320px;
+      padding: 16px 20px;
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+      border: 3px solid rgba(255,255,255,0.5);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .answer-input::placeholder { color: rgba(255,255,255,0.45); }
+
+    .answer-input:focus {
+      border-color: #ffffff;
+      background: rgba(255,255,255,0.25);
+    }
+
+    .check-btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #27c47a, #159552);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .check-btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+    .check-btn:active { transform: translateY(1px); }
+
+    .feedback {
+      font-size: 1.3rem;
+      font-weight: 700;
+      min-height: 1.6em;
+    }
+
+    .feedback.correct { color: #7aff9e; }
+    .feedback.wrong   { color: #ff7a7a; }
+
+    /* ── Results page ── */
+    #addone-results {
+      color: #ffffff;
+      gap: 32px;
+      text-align: center;
+    }
+
+    .results-heading {
+      font-size: 2rem;
+      font-weight: 800;
+      text-shadow: 0 3px 12px rgba(0,0,0,0.4);
+    }
+
+    .results-time {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 20px 48px;
+    }
+
+    .results-time span { color: #7aff9e; }
+
+    .leaderboard {
+      background: rgba(0,0,0,0.2);
+      border-radius: 18px;
+      padding: 24px 40px;
+      min-width: 320px;
+    }
+
+    .leaderboard h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #b8d9f7;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .leaderboard-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .leaderboard-row:last-child { border-bottom: none; }
+
+    .rank { font-size: 1.5rem; margin-right: 12px; }
+
+    .play-again-btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #e84393, #c0166f);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .play-again-btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+    .play-again-btn:active { transform: translateY(1px); }
   </style>
 </head>
 <body>
@@ -278,13 +355,27 @@
   <!-- Add One Game -->
   <div id="addone-page" class="page game-page">
     <div class="game-level" id="addone-level">Add 1 &mdash; Level 1</div>
+    <div class="stopwatch" id="addone-timer">00:00.0</div>
     <div class="game-question" id="addone-question">11 + 1 = ?</div>
     <div class="answer-area">
-      <input class="answer-input" id="addone-input" type="text" placeholder="Type your answer..." />
+      <input class="answer-input" id="addone-input" type="text" placeholder="Type your answer..."
+             onkeydown="if(event.key==='Enter') checkAddOne()" />
       <button class="check-btn" onclick="checkAddOne()">Check Answer</button>
       <div class="feedback" id="addone-feedback"></div>
     </div>
     <button class="back-btn" onclick="resetAddOne(); showPage('addition-page')">&#8592; Back to Addition</button>
+  </div>
+
+  <!-- Add One Results -->
+  <div id="addone-results" class="page">
+    <div class="results-heading">Did you beat your high score?</div>
+    <div class="results-time">Your time: <span id="result-time-display"></span></div>
+    <div class="leaderboard">
+      <h3>Top 3 Best Times</h3>
+      <div id="leaderboard-rows"></div>
+    </div>
+    <button class="play-again-btn" onclick="startAddOne()">Play Again</button>
+    <button class="back-btn" onclick="showPage('addition-page')">&#8592; Back to Addition</button>
   </div>
 
   <!-- Addition Sub-Menu -->
@@ -294,7 +385,7 @@
       <button class="category-btn btn-numbersplash" onclick="alert('Number splash coming soon!')">Number splash</button>
       <button class="category-btn btn-speedmath"    onclick="alert('Speed math coming soon!')">Speed math</button>
       <button class="category-btn btn-friendsoften" onclick="alert('Friends of ten coming soon!')">Friends of ten</button>
-      <button class="category-btn btn-addone"       onclick="showPage('addone-page')">Add one</button>
+      <button class="category-btn btn-addone"       onclick="startAddOne()">Add one</button>
     </div>
     <button class="back-btn" onclick="showPage('math-page')">&#8592; Back to Math</button>
   </div>
@@ -336,8 +427,8 @@
     };
 
     const addOneLevels = [
-      { level: 1, question: '11 + 1 = ?',  answer: '12' },
-      { level: 2, question: '123 + 1 = ?', answer: '124' },
+      { level: 1,  question: '11 + 1 = ?',           answer: '12' },
+      { level: 2,  question: '123 + 1 = ?',          answer: '124' },
       { level: 3,  question: '1029 + 1 = ?',         answer: '1030' },
       { level: 4,  question: '18257 + 1 = ?',        answer: '18258' },
       { level: 5,  question: '28754 + 1 = ?',        answer: '28755' },
@@ -347,7 +438,45 @@
       { level: 9,  question: '1234567809 + 1 = ?',   answer: '1234567810' },
       { level: 10, question: '10293847562 + 1 = ?',  answer: '10293847563' }
     ];
+
     let currentAddOneLevel = 0;
+    let timerInterval = null;
+    let timerStart = null;
+    let elapsedMs = 0;
+
+    function formatTime(ms) {
+      const totalTenths = Math.floor(ms / 100);
+      const tenths = totalTenths % 10;
+      const totalSecs = Math.floor(ms / 1000);
+      const secs = totalSecs % 60;
+      const mins = Math.floor(totalSecs / 60);
+      return (mins < 10 ? '0' : '') + mins + ':' +
+             (secs < 10 ? '0' : '') + secs + '.' + tenths;
+    }
+
+    function startTimer() {
+      timerStart = Date.now();
+      timerInterval = setInterval(() => {
+        elapsedMs = Date.now() - timerStart;
+        document.getElementById('addone-timer').textContent = formatTime(elapsedMs);
+      }, 100);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      elapsedMs = Date.now() - timerStart;
+    }
+
+    function startAddOne() {
+      currentAddOneLevel = 0;
+      elapsedMs = 0;
+      document.getElementById('addone-timer').textContent = '00:00.0';
+      loadAddOneLevel(0);
+      showPage('addone-page');
+      document.getElementById('addone-input').focus();
+      startTimer();
+    }
 
     function loadAddOneLevel(index) {
       const data = addOneLevels[index];
@@ -362,6 +491,7 @@
       const input = document.getElementById('addone-input');
       const feedback = document.getElementById('addone-feedback');
       const correct = addOneLevels[currentAddOneLevel].answer;
+
       if (input.value.trim() === correct) {
         const nextIndex = currentAddOneLevel + 1;
         if (nextIndex < addOneLevels.length) {
@@ -370,10 +500,11 @@
           setTimeout(() => {
             currentAddOneLevel = nextIndex;
             loadAddOneLevel(currentAddOneLevel);
-          }, 1000);
+            document.getElementById('addone-input').focus();
+          }, 800);
         } else {
-          feedback.textContent = '🎉 Amazing! You finished all levels!';
-          feedback.className = 'feedback correct';
+          stopTimer();
+          setTimeout(() => showResults(elapsedMs), 800);
         }
       } else {
         feedback.textContent = '❌ Not quite — try again!';
@@ -381,8 +512,33 @@
       }
     }
 
+    function showResults(ms) {
+      const scores = JSON.parse(localStorage.getItem('addone_scores') || '[]');
+      scores.push(ms);
+      scores.sort((a, b) => a - b);
+      const top3 = scores.slice(0, 3);
+      localStorage.setItem('addone_scores', JSON.stringify(scores));
+
+      document.getElementById('result-time-display').textContent = formatTime(ms);
+
+      const medals = ['🥇', '🥈', '🥉'];
+      const rows = top3.map((t, i) =>
+        `<div class="leaderboard-row">
+           <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
+           <span>${formatTime(t)}</span>
+         </div>`
+      ).join('');
+      document.getElementById('leaderboard-rows').innerHTML = rows;
+
+      showPage('addone-results');
+    }
+
     function resetAddOne() {
+      clearInterval(timerInterval);
+      timerInterval = null;
       currentAddOneLevel = 0;
+      elapsedMs = 0;
+      document.getElementById('addone-timer').textContent = '00:00.0';
       loadAddOneLevel(0);
     }
 
