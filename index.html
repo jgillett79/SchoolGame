@@ -83,6 +83,12 @@
     .btn-multiplication { background: linear-gradient(135deg, #27c47a, #159552); }
     .btn-division       { background: linear-gradient(135deg, #a855f7, #7c22d4); }
 
+    /* Addition sub-menu colours */
+    .btn-numbersplash  { background: linear-gradient(135deg, #e84393, #c0166f); }
+    .btn-speedmath     { background: linear-gradient(135deg, #f4a020, #d07a00); }
+    .btn-friendsoften  { background: linear-gradient(135deg, #27c47a, #159552); }
+    .btn-addone        { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+
     /* Inquiry sub-menu colours */
     .btn-animal    { background: linear-gradient(135deg, #e84393, #c0166f); }
     .btn-qa        { background: linear-gradient(135deg, #f4a020, #d07a00); }
@@ -193,11 +199,23 @@
     <button class="back-btn" onclick="showPage('front-page')">&#8592; Back to Menu</button>
   </div>
 
+  <!-- Addition Sub-Menu -->
+  <div id="addition-page" class="page">
+    <h1 class="title">Addition</h1>
+    <div class="button-grid">
+      <button class="category-btn btn-numbersplash" onclick="alert('Number splash coming soon!')">Number splash</button>
+      <button class="category-btn btn-speedmath"    onclick="alert('Speed math coming soon!')">Speed math</button>
+      <button class="category-btn btn-friendsoften" onclick="alert('Friends of ten coming soon!')">Friends of ten</button>
+      <button class="category-btn btn-addone"       onclick="alert('Add one coming soon!')">Add one</button>
+    </div>
+    <button class="back-btn" onclick="showPage('math-page')">&#8592; Back to Math</button>
+  </div>
+
   <!-- Math Sub-Menu -->
   <div id="math-page" class="page">
     <h1 class="title">Math</h1>
     <div class="button-grid">
-      <button class="category-btn btn-addition"       onclick="alert('Addition coming soon!')">Addition</button>
+      <button class="category-btn btn-addition"       onclick="showPage('addition-page')">Addition</button>
       <button class="category-btn btn-subtraction"    onclick="alert('Subtraction coming soon!')">Subtraction</button>
       <button class="category-btn btn-multiplication" onclick="alert('Multiplication coming soon!')">Multiplication</button>
       <button class="category-btn btn-division"       onclick="alert('Division coming soon!')">Division</button>
