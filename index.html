@@ -95,6 +95,12 @@
     .btn-punctuation { background: linear-gradient(135deg, #27c47a, #159552); }
     .btn-text        { background: linear-gradient(135deg, #a855f7, #7c22d4); }
 
+    /* Wellbeing sub-menu colours */
+    .btn-emotions       { background: linear-gradient(135deg, #e84393, #c0166f); }
+    .btn-friends        { background: linear-gradient(135deg, #f4a020, #d07a00); }
+    .btn-bodylanguage   { background: linear-gradient(135deg, #27c47a, #159552); }
+    .btn-handleemotions { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+
     .back-btn {
       padding: 14px 36px;
       border: 2px solid rgba(255, 255, 255, 0.6);
@@ -147,8 +153,20 @@
       <button class="category-btn btn-math"      onclick="showPage('math-page')">Math</button>
       <button class="category-btn btn-inquiry"   onclick="showPage('inquiry-page')">Inquiry</button>
       <button class="category-btn btn-literacy"  onclick="showPage('literacy-page')">Literacy</button>
-      <button class="category-btn btn-wellbeing" onclick="openSubject('Wellbeing')">Wellbeing</button>
+      <button class="category-btn btn-wellbeing" onclick="showPage('wellbeing-page')">Wellbeing</button>
     </div>
+  </div>
+
+  <!-- Wellbeing Sub-Menu -->
+  <div id="wellbeing-page" class="page">
+    <h1 class="title">Wellbeing</h1>
+    <div class="button-grid">
+      <button class="category-btn btn-emotions"       onclick="alert('Emotions coming soon!')">Emotions</button>
+      <button class="category-btn btn-friends"        onclick="alert('Friends coming soon!')">Friends</button>
+      <button class="category-btn btn-bodylanguage"   onclick="alert('Body language coming soon!')">Body language</button>
+      <button class="category-btn btn-handleemotions" onclick="alert('How to handle emotions coming soon!')">How to handle emotions</button>
+    </div>
+    <button class="back-btn" onclick="showPage('front-page')">&#8592; Back to Menu</button>
   </div>
 
   <!-- Literacy Sub-Menu -->
