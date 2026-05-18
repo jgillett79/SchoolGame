@@ -277,8 +277,8 @@
 
   <!-- Add One Game -->
   <div id="addone-page" class="page game-page">
-    <div class="game-level">Add 1 &mdash; Level 1</div>
-    <div class="game-question">11 + 1 = ?</div>
+    <div class="game-level" id="addone-level">Add 1 &mdash; Level 1</div>
+    <div class="game-question" id="addone-question">11 + 1 = ?</div>
     <div class="answer-area">
       <input class="answer-input" id="addone-input" type="text" placeholder="Type your answer..." />
       <button class="check-btn" onclick="checkAddOne()">Check Answer</button>
@@ -335,13 +335,38 @@
       }
     };
 
+    const addOneLevels = [
+      { level: 1, question: '11 + 1 = ?',  answer: '12' },
+      { level: 2, question: '123 + 1 = ?', answer: '124' }
+    ];
+    let currentAddOneLevel = 0;
+
+    function loadAddOneLevel(index) {
+      const data = addOneLevels[index];
+      document.getElementById('addone-level').textContent = 'Add 1 — Level ' + data.level;
+      document.getElementById('addone-question').textContent = data.question;
+      document.getElementById('addone-input').value = '';
+      document.getElementById('addone-feedback').textContent = '';
+      document.getElementById('addone-feedback').className = 'feedback';
+    }
+
     function checkAddOne() {
       const input = document.getElementById('addone-input');
       const feedback = document.getElementById('addone-feedback');
-      const correct = '12';
+      const correct = addOneLevels[currentAddOneLevel].answer;
       if (input.value.trim() === correct) {
-        feedback.textContent = '✅ Correct! Well done!';
-        feedback.className = 'feedback correct';
+        const nextIndex = currentAddOneLevel + 1;
+        if (nextIndex < addOneLevels.length) {
+          feedback.textContent = '✅ Correct! Loading next level...';
+          feedback.className = 'feedback correct';
+          setTimeout(() => {
+            currentAddOneLevel = nextIndex;
+            loadAddOneLevel(currentAddOneLevel);
+          }, 1000);
+        } else {
+          feedback.textContent = '🎉 Amazing! You finished all levels!';
+          feedback.className = 'feedback correct';
+        }
       } else {
         feedback.textContent = '❌ Not quite — try again!';
         feedback.className = 'feedback wrong';
@@ -349,9 +374,8 @@
     }
 
     function resetAddOne() {
-      document.getElementById('addone-input').value = '';
-      document.getElementById('addone-feedback').textContent = '';
-      document.getElementById('addone-feedback').className = 'feedback';
+      currentAddOneLevel = 0;
+      loadAddOneLevel(0);
     }
 
     function showPage(id) {
