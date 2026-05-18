@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a6fbf 0%, #0d4a8a 50%, #082d5e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* ── Front Page ── */
+    #front-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .title {
+      color: #ffffff;
+      font-size: 3rem;
+      font-weight: 800;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: #b8d9f7;
+      font-size: 1.2rem;
+      margin-top: -36px;
+      letter-spacing: 1px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .category-btn {
+      width: 200px;
+      height: 120px;
+      border: none;
+      border-radius: 18px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      color: #ffffff;
+    }
+
+    .category-btn:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .category-btn:active {
+      transform: translateY(1px) scale(0.98);
+      filter: brightness(0.9);
+    }
+
+    .btn-math      { background: linear-gradient(135deg, #e84393, #c0166f); }
+    .btn-inquiry   { background: linear-gradient(135deg, #f4a020, #d07a00); }
+    .btn-literacy  { background: linear-gradient(135deg, #27c47a, #159552); }
+    .btn-wellbeing { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+
+    /* ── Subject Page ── */
+    #subject-page {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      color: #ffffff;
+    }
+
+    .subject-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .subject-description {
+      font-size: 1.1rem;
+      color: #b8d9f7;
+      max-width: 420px;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .back-btn {
+      margin-top: 16px;
+      padding: 14px 36px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+      letter-spacing: 1px;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .subject-icon {
+      font-size: 5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Front Page -->
+  <div id="front-page">
+    <div>
+      <h1 class="title">School Game</h1>
+      <p class="subtitle">Choose a subject to begin</p>
+    </div>
+    <div class="button-grid">
+      <button class="category-btn btn-math"      onclick="openSubject('Math')">Math</button>
+      <button class="category-btn btn-inquiry"   onclick="openSubject('Inquiry')">Inquiry</button>
+      <button class="category-btn btn-literacy"  onclick="openSubject('Literacy')">Literacy</button>
+      <button class="category-btn btn-wellbeing" onclick="openSubject('Wellbeing')">Wellbeing</button>
+    </div>
+  </div>
+
+  <!-- Subject Page -->
+  <div id="subject-page">
+    <div class="subject-icon" id="subject-icon"></div>
+    <h2 class="subject-title" id="subject-title"></h2>
+    <p class="subject-description" id="subject-description"></p>
+    <button class="back-btn" onclick="goBack()">&#8592; Back to Menu</button>
+  </div>
+
+  <script>
+    const subjects = {
+      Math: {
+        icon: '➕',
+        description: 'Practice your numbers, solve puzzles, and sharpen your maths skills with fun challenges!'
+      },
+      Inquiry: {
+        icon: '🔍',
+        description: 'Ask big questions, explore the world around you, and discover how things work through investigation!'
+      },
+      Literacy: {
+        icon: '📚',
+        description: 'Read, write, and communicate — build your vocabulary and express your ideas with confidence!'
+      },
+      Wellbeing: {
+        icon: '🌟',
+        description: 'Take care of your mind and body. Learn about healthy habits, emotions, and how to feel your best!'
+      }
+    };
+
+    function openSubject(name) {
+      const data = subjects[name];
+      document.getElementById('subject-icon').textContent = data.icon;
+      document.getElementById('subject-title').textContent = name;
+      document.getElementById('subject-description').textContent = data.description;
+
+      document.getElementById('front-page').style.display = 'none';
+      const sp = document.getElementById('subject-page');
+      sp.style.display = 'flex';
+    }
+
+    function goBack() {
+      document.getElementById('subject-page').style.display = 'none';
+      document.getElementById('front-page').style.display = 'flex';
+    }
+  </script>
+
+</body>
+</html>
