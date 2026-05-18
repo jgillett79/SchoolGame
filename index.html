@@ -233,7 +233,31 @@
     .feedback.correct { color: #7aff9e; }
     .feedback.wrong   { color: #ff7a7a; }
 
-    /* ── Results page ── */
+    .timer-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .goto-times-btn {
+      padding: 10px 20px;
+      border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 50px;
+      background: rgba(255,255,255,0.12);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .goto-times-btn:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
+    }
+
+
     #addone-results {
       color: #ffffff;
       gap: 32px;
@@ -355,7 +379,10 @@
   <!-- Add One Game -->
   <div id="addone-page" class="page game-page">
     <div class="game-level" id="addone-level">Add 1 &mdash; Level 1</div>
-    <div class="stopwatch" id="addone-timer">00:00.0</div>
+    <div class="timer-row">
+      <div class="stopwatch" id="addone-timer">00:00.0</div>
+      <button class="goto-times-btn" onclick="viewTimes()">Go to Times</button>
+    </div>
     <div class="game-question" id="addone-question">11 + 1 = ?</div>
     <div class="answer-area">
       <input class="answer-input" id="addone-input" type="text" placeholder="Type your answer..."
@@ -512,24 +539,37 @@
       }
     }
 
-    function showResults(ms) {
-      const scores = JSON.parse(localStorage.getItem('addone_scores') || '[]');
-      scores.push(ms);
-      scores.sort((a, b) => a - b);
-      const top3 = scores.slice(0, 3);
-      localStorage.setItem('addone_scores', JSON.stringify(scores));
+    function viewTimes() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      renderLeaderboard(null);
+      showPage('addone-results');
+    }
 
-      document.getElementById('result-time-display').textContent = formatTime(ms);
+    function renderLeaderboard(ms) {
+      const scores = JSON.parse(localStorage.getItem('addone_scores') || '[]');
+      if (ms !== null) {
+        scores.push(ms);
+        scores.sort((a, b) => a - b);
+        localStorage.setItem('addone_scores', JSON.stringify(scores));
+      }
+      const top3 = scores.slice(0, 3);
+
+      document.getElementById('result-time-display').textContent = ms !== null ? formatTime(ms) : '—';
 
       const medals = ['🥇', '🥈', '🥉'];
-      const rows = top3.map((t, i) =>
-        `<div class="leaderboard-row">
-           <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
-           <span>${formatTime(t)}</span>
-         </div>`
-      ).join('');
+      const rows = top3.length
+        ? top3.map((t, i) =>
+            `<div class="leaderboard-row">
+               <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
+               <span>${formatTime(t)}</span>
+             </div>`).join('')
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish Level 10!</div>';
       document.getElementById('leaderboard-rows').innerHTML = rows;
+    }
 
+    function showResults(ms) {
+      renderLeaderboard(ms);
       showPage('addone-results');
     }
 
