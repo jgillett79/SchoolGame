@@ -278,7 +278,7 @@
   <!-- Add One Game -->
   <div id="addone-page" class="page game-page">
     <div class="game-level">Add 1 &mdash; Level 1</div>
-    <div class="game-question">19274103739738356 + 1 = ?</div>
+    <div class="game-question">11 + 1 = ?</div>
     <div class="answer-area">
       <input class="answer-input" id="addone-input" type="text" placeholder="Type your answer..." />
       <button class="check-btn" onclick="checkAddOne()">Check Answer</button>
@@ -338,7 +338,7 @@
     function checkAddOne() {
       const input = document.getElementById('addone-input');
       const feedback = document.getElementById('addone-feedback');
-      const correct = '19274103739738357';
+      const correct = '12';
       if (input.value.trim() === correct) {
         feedback.textContent = '✅ Correct! Well done!';
         feedback.className = 'feedback correct';
