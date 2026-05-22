@@ -421,7 +421,10 @@
   <!-- Speed Math Game -->
   <div id="speedmath-page" class="page">
     <div class="game-level">Speed Math &mdash; Level 1</div>
-    <div class="countdown" id="sm-countdown">50</div>
+    <div class="timer-row">
+      <div class="countdown" id="sm-countdown">50</div>
+      <button class="goto-times-btn" onclick="viewSpeedMathLeaderboard()">Leaderboard</button>
+    </div>
     <div class="sm-score-bar">Score: <span id="sm-score">0</span></div>
     <div class="game-question" id="sm-question">192 + 684</div>
     <div class="answer-area">
@@ -727,6 +730,22 @@
         feedback.className = 'feedback wrong';
         input.value = '';
       }
+    }
+
+    function viewSpeedMathLeaderboard() {
+      stopSpeedMath();
+      const scores = JSON.parse(localStorage.getItem('speedmath_scores') || '[]');
+      const top3 = scores.slice(0, 3);
+      document.getElementById('sm-final-score').textContent = '—';
+      const medals = ['🥇', '🥈', '🥉'];
+      document.getElementById('sm-leaderboard-rows').innerHTML = top3.length
+        ? top3.map((s, i) =>
+            `<div class="leaderboard-row">
+               <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
+               <span>${s} correct</span>
+             </div>`).join('')
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No scores yet — finish a game!</div>';
+      showPage('speedmath-results');
     }
 
     function showSpeedMathResults() {
