@@ -258,7 +258,49 @@
     }
 
 
-    #addone-results {
+    /* ── Speed Math ── */
+    #speedmath-page {
+      color: #ffffff;
+      gap: 28px;
+      text-align: center;
+    }
+
+    .countdown {
+      font-size: 3rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 12px 40px;
+      letter-spacing: 3px;
+      transition: color 0.3s;
+    }
+
+    .countdown.urgent { color: #ff7a7a; }
+
+    .sm-score-bar {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #b8d9f7;
+    }
+
+    #speedmath-results {
+      color: #ffffff;
+      gap: 32px;
+      text-align: center;
+    }
+
+    .sm-result-score {
+      font-size: 3rem;
+      font-weight: 800;
+      background: rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 24px 56px;
+    }
+
+    .sm-result-score span { color: #7aff9e; }
+
+
       color: #ffffff;
       gap: 32px;
       text-align: center;
@@ -376,6 +418,30 @@
     <button class="back-btn" onclick="showPage('front-page')">&#8592; Back to Menu</button>
   </div>
 
+  <!-- Speed Math Game -->
+  <div id="speedmath-page" class="page">
+    <div class="game-level">Speed Math &mdash; Level 1</div>
+    <div class="countdown" id="sm-countdown">50</div>
+    <div class="sm-score-bar">Score: <span id="sm-score">0</span></div>
+    <div class="game-question" id="sm-question">192 + 684</div>
+    <div class="answer-area">
+      <input class="answer-input" id="sm-input" type="text" placeholder="Type your answer..."
+             onkeydown="if(event.key==='Enter') checkSpeedMath()" />
+      <button class="check-btn" onclick="checkSpeedMath()">Check Answer</button>
+      <div class="feedback" id="sm-feedback"></div>
+    </div>
+    <button class="back-btn" onclick="stopSpeedMath(); showPage('addition-page')">&#8592; Back to Addition</button>
+  </div>
+
+  <!-- Speed Math Results -->
+  <div id="speedmath-results" class="page">
+    <div class="game-level">Speed Math &mdash; Level 1</div>
+    <div class="results-heading">Time&rsquo;s up!</div>
+    <div class="sm-result-score">You answered <span id="sm-final-score"></span> correctly!</div>
+    <button class="play-again-btn" onclick="startSpeedMath()">Play Again</button>
+    <button class="back-btn" onclick="showPage('addition-page')">&#8592; Back to Addition</button>
+  </div>
+
   <!-- Add One Game -->
   <div id="addone-page" class="page game-page">
     <div class="game-level" id="addone-level">Add 1 &mdash; Level 1</div>
@@ -410,7 +476,7 @@
     <h1 class="title">Addition</h1>
     <div class="button-grid">
       <button class="category-btn btn-numbersplash" onclick="alert('Number splash coming soon!')">Number splash</button>
-      <button class="category-btn btn-speedmath"    onclick="alert('Speed math coming soon!')">Speed math</button>
+      <button class="category-btn btn-speedmath"    onclick="startSpeedMath()">Speed math</button>
       <button class="category-btn btn-friendsoften" onclick="alert('Friends of ten coming soon!')">Friends of ten</button>
       <button class="category-btn btn-addone"       onclick="startAddOne()">Add one</button>
     </div>
@@ -580,6 +646,89 @@
       elapsedMs = 0;
       document.getElementById('addone-timer').textContent = '00:00.0';
       loadAddOneLevel(0);
+    }
+
+    // ── Speed Math ──
+    const smQuestions = [
+      { q: '192 + 684', a: '876' },
+      { q: '47 + 56',   a: '103' },
+      { q: '315 + 479', a: '794' },
+      { q: '83 + 149',  a: '232' },
+      { q: '261 + 738', a: '999' },
+      { q: '504 + 396', a: '900' },
+      { q: '127 + 865', a: '992' },
+      { q: '73 + 258',  a: '331' },
+      { q: '440 + 387', a: '827' },
+      { q: '619 + 274', a: '893' },
+      { q: '55 + 678',  a: '733' },
+      { q: '302 + 589', a: '891' },
+      { q: '167 + 443', a: '610' },
+      { q: '88 + 712',  a: '800' },
+      { q: '536 + 248', a: '784' },
+    ];
+
+    let smTimer = null;
+    let smSecondsLeft = 50;
+    let smScore = 0;
+    let smCurrentQ = 0;
+    let smUsed = [];
+
+    function smNextQuestion() {
+      // pick a random question not used recently
+      let available = smQuestions.map((_, i) => i).filter(i => !smUsed.includes(i));
+      if (available.length === 0) { smUsed = []; available = smQuestions.map((_, i) => i); }
+      const idx = available[Math.floor(Math.random() * available.length)];
+      smUsed.push(idx);
+      smCurrentQ = idx;
+      document.getElementById('sm-question').textContent = smQuestions[idx].q + ' = ?';
+      document.getElementById('sm-input').value = '';
+      document.getElementById('sm-feedback').textContent = '';
+      document.getElementById('sm-feedback').className = 'feedback';
+      document.getElementById('sm-input').focus();
+    }
+
+    function startSpeedMath() {
+      smScore = 0;
+      smSecondsLeft = 50;
+      smUsed = [];
+      document.getElementById('sm-score').textContent = '0';
+      document.getElementById('sm-countdown').textContent = '50';
+      document.getElementById('sm-countdown').className = 'countdown';
+      smNextQuestion();
+      showPage('speedmath-page');
+      clearInterval(smTimer);
+      smTimer = setInterval(() => {
+        smSecondsLeft--;
+        document.getElementById('sm-countdown').textContent = smSecondsLeft;
+        if (smSecondsLeft <= 10) document.getElementById('sm-countdown').className = 'countdown urgent';
+        if (smSecondsLeft <= 0) {
+          clearInterval(smTimer);
+          smTimer = null;
+          document.getElementById('sm-final-score').textContent = smScore;
+          showPage('speedmath-results');
+        }
+      }, 1000);
+    }
+
+    function checkSpeedMath() {
+      const input = document.getElementById('sm-input');
+      const feedback = document.getElementById('sm-feedback');
+      if (input.value.trim() === smQuestions[smCurrentQ].a) {
+        smScore++;
+        document.getElementById('sm-score').textContent = smScore;
+        feedback.textContent = '✅ Correct!';
+        feedback.className = 'feedback correct';
+        setTimeout(smNextQuestion, 500);
+      } else {
+        feedback.textContent = '❌ Try again!';
+        feedback.className = 'feedback wrong';
+        input.value = '';
+      }
+    }
+
+    function stopSpeedMath() {
+      clearInterval(smTimer);
+      smTimer = null;
     }
 
     function showPage(id) {
