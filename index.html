@@ -438,6 +438,10 @@
     <div class="game-level">Speed Math &mdash; Level 1</div>
     <div class="results-heading">Time&rsquo;s up!</div>
     <div class="sm-result-score">You answered <span id="sm-final-score"></span> correctly!</div>
+    <div class="leaderboard">
+      <h3>Top 3 Best Scores</h3>
+      <div id="sm-leaderboard-rows"></div>
+    </div>
     <button class="play-again-btn" onclick="startSpeedMath()">Play Again</button>
     <button class="back-btn" onclick="showPage('addition-page')">&#8592; Back to Addition</button>
   </div>
@@ -704,8 +708,7 @@
         if (smSecondsLeft <= 0) {
           clearInterval(smTimer);
           smTimer = null;
-          document.getElementById('sm-final-score').textContent = smScore;
-          showPage('speedmath-results');
+          showSpeedMathResults();
         }
       }, 1000);
     }
@@ -724,6 +727,26 @@
         feedback.className = 'feedback wrong';
         input.value = '';
       }
+    }
+
+    function showSpeedMathResults() {
+      const scores = JSON.parse(localStorage.getItem('speedmath_scores') || '[]');
+      scores.push(smScore);
+      scores.sort((a, b) => b - a);
+      localStorage.setItem('speedmath_scores', JSON.stringify(scores));
+      const top3 = scores.slice(0, 3);
+
+      document.getElementById('sm-final-score').textContent = smScore;
+
+      const medals = ['🥇', '🥈', '🥉'];
+      document.getElementById('sm-leaderboard-rows').innerHTML = top3.map((s, i) =>
+        `<div class="leaderboard-row">
+           <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
+           <span>${s} correct</span>
+         </div>`
+      ).join('');
+
+      showPage('speedmath-results');
     }
 
     function stopSpeedMath() {
