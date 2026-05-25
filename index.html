@@ -894,7 +894,7 @@
             }, 600);
           } else {
             clearInterval(fotTimerInterval);
-            setTimeout(()=>showFOTResults(fotElapsed), 800);
+            showFOTResults(fotElapsed);
           }
         } else {
           setTimeout(()=>{fb.textContent='';fb.className='ns-fb';},1000);
