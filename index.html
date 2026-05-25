@@ -347,6 +347,11 @@
     .ns-fb { font-size: 1.2rem; font-weight: 700; min-height: 1.5em; }
 
     #ns-results { color: #fff; gap: 32px; text-align: center; }
+    @keyframes ns-hint-pulse {
+      0%,100% { box-shadow: 0 0 0 3px rgba(122,255,158,0.7), 0 4px 10px rgba(0,0,0,0.3); }
+      50%      { box-shadow: 0 0 0 5px rgba(122,255,158,1), 0 0 22px rgba(122,255,158,0.9); }
+    }
+    .ns-tile.hint { animation: ns-hint-pulse 0.6s ease-in-out infinite; }
   </style>
 </head>
 <body>
@@ -982,8 +987,8 @@
       // build tile list (30 tiles, shuffled)
       nsTiles = [];
       nsPairs.forEach((p,pi) => {
-        nsTiles.push({value:p.a, pairId:pi, inSlot:-1, used:false});
-        nsTiles.push({value:p.b, pairId:pi, inSlot:-1, used:false});
+        nsTiles.push({value:p.a, pairId:pi, inSlot:-1, used:false, hint:false});
+        nsTiles.push({value:p.b, pairId:pi, inSlot:-1, used:false, hint:false});
       });
       nsTiles.sort(()=>Math.random()-0.5);
 
@@ -1032,10 +1037,13 @@
     function renderNSTiles() {
       const pool = document.getElementById('ns-tile-pool');
       pool.innerHTML = '';
-      nsTiles.forEach((tile,idx) => {
-        if (tile.used) return;
+      // Hint tiles float to the front so the swapped-in partner is immediately visible
+      const order = nsTiles.map((_,i)=>i).filter(i=>!nsTiles[i].used)
+        .sort((a,b)=>(nsTiles[b].hint?1:0)-(nsTiles[a].hint?1:0));
+      order.forEach(idx => {
+        const tile = nsTiles[idx];
         const el = document.createElement('div');
-        el.className = 'ns-tile' + (tile.inSlot>=0?' in-slot':'');
+        el.className = 'ns-tile' + (tile.inSlot>=0?' in-slot':'') + (tile.hint?' hint':'');
         el.id = 'ns-tile-'+idx;
         el.textContent = tile.value;
         el.style.background = nsTileColors[idx % nsTileColors.length];
@@ -1146,11 +1154,26 @@
           setTimeout(()=>{ fb.textContent=''; fb.className='ns-fb'; }, 1000);
         }
       } else {
-        fb.textContent='❌ Not quite — try another pair!'; fb.className='ns-fb feedback wrong';
-        nsTiles[nsSlotTileIdx[0]].inSlot=-1; nsTiles[nsSlotTileIdx[1]].inSlot=-1;
+        fb.textContent='❌ Wrong pair — swapping in the right number!'; fb.className='ns-fb feedback wrong';
+        const tileAIdx = nsSlotTileIdx[0];
+        const tileBIdx = nsSlotTileIdx[1];
+        // Find A's correct partner (same pairId, other tile)
+        const partnerIdx = nsTiles.findIndex((t,i) =>
+          t.pairId === nsTiles[tileAIdx].pairId && i !== tileAIdx && !t.used
+        );
+        nsTiles[tileAIdx].inSlot = -1;
+        nsTiles[tileBIdx].inSlot = -1;
         nsSlotVal=[null,null]; nsSlotTileIdx=[null,null];
+        if (partnerIdx >= 0 && partnerIdx !== tileBIdx) {
+          // Swap partner and B in the array — partner now occupies B's slot position
+          [nsTiles[partnerIdx], nsTiles[tileBIdx]] = [nsTiles[tileBIdx], nsTiles[partnerIdx]];
+          // The partner is now at tileBIdx; grab a reference to it and highlight
+          const hintTile = nsTiles[tileBIdx];
+          hintTile.hint = true;
+          setTimeout(() => { hintTile.hint = false; renderNSTiles(); }, 2500);
+        }
         renderNSTiles(); updateNSEquation();
-        setTimeout(()=>{ fb.textContent=''; fb.className='ns-fb'; }, 1200);
+        setTimeout(()=>{ fb.textContent=''; fb.className='ns-fb'; }, 1400);
       }
     }
 
