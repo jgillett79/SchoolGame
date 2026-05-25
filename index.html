@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>School Game</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       min-height: 100vh;
@@ -19,24 +15,23 @@
       align-items: center;
       justify-content: center;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px 0;
     }
 
     .page {
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 48px;
+      gap: 40px;
     }
 
-    .page.active {
-      display: flex;
-    }
+    .page.active { display: flex; }
 
     .title {
-      color: #ffffff;
+      color: #fff;
       font-size: 3rem;
       font-weight: 800;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+      text-shadow: 0 3px 12px rgba(0,0,0,0.4);
       letter-spacing: 2px;
       text-align: center;
     }
@@ -57,102 +52,71 @@
       cursor: pointer;
       letter-spacing: 1px;
       transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+      color: #fff;
     }
 
-    .category-btn:hover {
-      transform: translateY(-4px) scale(1.04);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
-    }
+    .category-btn:hover  { transform: translateY(-4px) scale(1.04); box-shadow: 0 12px 28px rgba(0,0,0,0.45); }
+    .category-btn:active { transform: translateY(1px) scale(0.98); filter: brightness(0.9); }
 
-    .category-btn:active {
-      transform: translateY(1px) scale(0.98);
-      filter: brightness(0.9);
-    }
+    /* Main menu */
+    .btn-math      { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-inquiry   { background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-literacy  { background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-wellbeing { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
-    /* Main menu colours */
-    .btn-math      { background: linear-gradient(135deg, #e84393, #c0166f); }
-    .btn-inquiry   { background: linear-gradient(135deg, #f4a020, #d07a00); }
-    .btn-literacy  { background: linear-gradient(135deg, #27c47a, #159552); }
-    .btn-wellbeing { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+    /* Math sub-menu */
+    .btn-addition       { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-subtraction    { background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-multiplication { background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-division       { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
-    /* Math sub-menu colours */
-    .btn-addition       { background: linear-gradient(135deg, #e84393, #c0166f); }
-    .btn-subtraction    { background: linear-gradient(135deg, #f4a020, #d07a00); }
-    .btn-multiplication { background: linear-gradient(135deg, #27c47a, #159552); }
-    .btn-division       { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+    /* Addition sub-menu */
+    .btn-numbersplash  { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-speedmath     { background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-friendsoften  { background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-addone        { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
-    /* Addition sub-menu colours */
-    .btn-numbersplash  { background: linear-gradient(135deg, #e84393, #c0166f); }
-    .btn-speedmath     { background: linear-gradient(135deg, #f4a020, #d07a00); }
-    .btn-friendsoften  { background: linear-gradient(135deg, #27c47a, #159552); }
-    .btn-addone        { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+    /* Inquiry sub-menu */
+    .btn-animal    { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-qa        { background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-landscape { background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-world     { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
-    /* Inquiry sub-menu colours */
-    .btn-animal    { background: linear-gradient(135deg, #e84393, #c0166f); }
-    .btn-qa        { background: linear-gradient(135deg, #f4a020, #d07a00); }
-    .btn-landscape { background: linear-gradient(135deg, #27c47a, #159552); }
-    .btn-world     { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+    /* Literacy sub-menu */
+    .btn-sentence    { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-paragraphs  { background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-punctuation { background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-text        { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
-    /* Literacy sub-menu colours */
-    .btn-sentence    { background: linear-gradient(135deg, #e84393, #c0166f); }
-    .btn-paragraphs  { background: linear-gradient(135deg, #f4a020, #d07a00); }
-    .btn-punctuation { background: linear-gradient(135deg, #27c47a, #159552); }
-    .btn-text        { background: linear-gradient(135deg, #a855f7, #7c22d4); }
-
-    /* Wellbeing sub-menu colours */
-    .btn-emotions       { background: linear-gradient(135deg, #e84393, #c0166f); }
-    .btn-friends        { background: linear-gradient(135deg, #f4a020, #d07a00); }
-    .btn-bodylanguage   { background: linear-gradient(135deg, #27c47a, #159552); }
-    .btn-handleemotions { background: linear-gradient(135deg, #a855f7, #7c22d4); }
+    /* Wellbeing sub-menu */
+    .btn-emotions       { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-friends        { background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-bodylanguage   { background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-handleemotions { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
     .back-btn {
       padding: 14px 36px;
-      border: 2px solid rgba(255, 255, 255, 0.6);
+      border: 2px solid rgba(255,255,255,0.6);
       border-radius: 50px;
-      background: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.15s ease;
+      transition: background 0.2s, transform 0.15s;
       letter-spacing: 1px;
     }
+    .back-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
 
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
-
-    /* Subject page (non-math) */
-    #subject-page {
-      color: #ffffff;
-      gap: 32px;
-    }
-
-    .subject-title {
-      font-size: 2.8rem;
-      font-weight: 800;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    .subject-description {
-      font-size: 1.1rem;
-      color: #b8d9f7;
-      max-width: 420px;
-      text-align: center;
-      line-height: 1.7;
-    }
-
+    /* Subject page */
+    #subject-page { color: #fff; gap: 32px; }
+    .subject-title { font-size: 2.8rem; font-weight: 800; text-shadow: 0 3px 12px rgba(0,0,0,0.4); }
+    .subject-description { font-size: 1.1rem; color: #b8d9f7; max-width: 420px; text-align: center; line-height: 1.7; }
     .subject-icon { font-size: 5rem; }
 
-    /* ── Add One game ── */
-    .game-page {
-      color: #ffffff;
-      gap: 28px;
-      text-align: center;
-    }
+    /* Shared game styles */
+    .game-page { color: #fff; gap: 28px; text-align: center; }
 
     .game-level {
       font-size: 2rem;
@@ -171,6 +135,22 @@
       letter-spacing: 2px;
     }
 
+    .timer-row { display: flex; align-items: center; gap: 16px; }
+
+    .goto-times-btn {
+      padding: 10px 20px;
+      border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 50px;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .goto-times-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
     .game-question {
       font-size: 2.6rem;
       font-weight: 700;
@@ -180,12 +160,7 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
 
-    .answer-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
+    .answer-area { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 
     .answer-input {
       width: 320px;
@@ -196,74 +171,61 @@
       border: 3px solid rgba(255,255,255,0.5);
       border-radius: 14px;
       background: rgba(255,255,255,0.15);
-      color: #ffffff;
+      color: #fff;
       outline: none;
       transition: border-color 0.2s, background 0.2s;
     }
-
     .answer-input::placeholder { color: rgba(255,255,255,0.45); }
-
-    .answer-input:focus {
-      border-color: #ffffff;
-      background: rgba(255,255,255,0.25);
-    }
+    .answer-input:focus { border-color: #fff; background: rgba(255,255,255,0.25); }
 
     .check-btn {
       padding: 14px 40px;
       border: none;
       border-radius: 50px;
-      background: linear-gradient(135deg, #27c47a, #159552);
-      color: #ffffff;
+      background: linear-gradient(135deg,#27c47a,#159552);
+      color: #fff;
       font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0,0,0,0.3);
       transition: transform 0.15s, box-shadow 0.15s;
     }
-
     .check-btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
     .check-btn:active { transform: translateY(1px); }
 
-    .feedback {
-      font-size: 1.3rem;
-      font-weight: 700;
-      min-height: 1.6em;
-    }
-
+    .feedback { font-size: 1.3rem; font-weight: 700; min-height: 1.6em; }
     .feedback.correct { color: #7aff9e; }
     .feedback.wrong   { color: #ff7a7a; }
 
-    .timer-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    /* Results shared */
+    .results-heading { font-size: 2rem; font-weight: 800; text-shadow: 0 3px 12px rgba(0,0,0,0.4); }
+    .results-time { font-size: 2.4rem; font-weight: 700; background: rgba(255,255,255,0.12); border-radius: 20px; padding: 18px 48px; }
+    .results-time span { color: #7aff9e; }
 
-    .goto-times-btn {
-      padding: 10px 20px;
-      border: 2px solid rgba(255,255,255,0.6);
+    .leaderboard { background: rgba(0,0,0,0.2); border-radius: 18px; padding: 24px 40px; min-width: 320px; }
+    .leaderboard h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; color: #b8d9f7; letter-spacing: 1px; text-transform: uppercase; }
+    .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 1.2rem; font-weight: 600; }
+    .leaderboard-row:last-child { border-bottom: none; }
+    .rank { font-size: 1.5rem; margin-right: 12px; }
+
+    .play-again-btn {
+      padding: 14px 40px;
+      border: none;
       border-radius: 50px;
-      background: rgba(255,255,255,0.12);
-      color: #ffffff;
-      font-size: 0.9rem;
-      font-weight: 600;
+      background: linear-gradient(135deg,#e84393,#c0166f);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
     }
-
-    .goto-times-btn:hover {
-      background: rgba(255,255,255,0.25);
-      transform: translateY(-2px);
-    }
-
+    .play-again-btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+    .play-again-btn:active { transform: translateY(1px); }
 
     /* ── Speed Math ── */
-    #speedmath-page {
-      color: #ffffff;
-      gap: 28px;
-      text-align: center;
-    }
+    #speedmath-page { color: #fff; gap: 28px; text-align: center; }
+    #speedmath-results { color: #fff; gap: 32px; text-align: center; }
 
     .countdown {
       font-size: 3rem;
@@ -275,98 +237,111 @@
       letter-spacing: 3px;
       transition: color 0.3s;
     }
-
     .countdown.urgent { color: #ff7a7a; }
-
-    .sm-score-bar {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #b8d9f7;
-    }
-
-    #speedmath-results {
-      color: #ffffff;
-      gap: 32px;
-      text-align: center;
-    }
-
-    .sm-result-score {
-      font-size: 3rem;
-      font-weight: 800;
-      background: rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 24px 56px;
-    }
-
+    .sm-score-bar { font-size: 1.1rem; font-weight: 600; color: #b8d9f7; }
+    .sm-result-score { font-size: 2.6rem; font-weight: 800; background: rgba(255,255,255,0.12); border-radius: 20px; padding: 20px 48px; }
     .sm-result-score span { color: #7aff9e; }
 
+    /* ── Add One ── */
+    #addone-results { color: #fff; gap: 32px; text-align: center; }
 
-      color: #ffffff;
-      gap: 32px;
-      text-align: center;
-    }
-
-    .results-heading {
-      font-size: 2rem;
-      font-weight: 800;
-      text-shadow: 0 3px 12px rgba(0,0,0,0.4);
-    }
-
-    .results-time {
-      font-size: 2.8rem;
-      font-weight: 700;
-      background: rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 20px 48px;
-    }
-
-    .results-time span { color: #7aff9e; }
-
-    .leaderboard {
-      background: rgba(0,0,0,0.2);
-      border-radius: 18px;
-      padding: 24px 40px;
-      min-width: 320px;
-    }
-
-    .leaderboard h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: #b8d9f7;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .leaderboard-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ── Number Splash ── */
+    #numbersplash-page {
+      color: #fff;
+      gap: 18px;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      font-size: 1.2rem;
-      font-weight: 600;
     }
 
-    .leaderboard-row:last-child { border-bottom: none; }
+    .ns-splash-area {
+      position: relative;
+      width: min(560px, 94vw);
+      height: 220px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 22px;
+      overflow: hidden;
+    }
 
-    .rank { font-size: 1.5rem; margin-right: 12px; }
+    .ns-target {
+      position: absolute;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      user-select: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .ns-target.done { opacity: 0; transform: scale(0.4); pointer-events: none; }
 
-    .play-again-btn {
-      padding: 14px 40px;
-      border: none;
-      border-radius: 50px;
-      background: linear-gradient(135deg, #e84393, #c0166f);
-      color: #ffffff;
-      font-size: 1.1rem;
+    .ns-equation {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.9rem;
       font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-      transition: transform 0.15s, box-shadow 0.15s;
+      color: #fff;
     }
 
-    .play-again-btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-    .play-again-btn:active { transform: translateY(1px); }
+    .ns-slot {
+      width: 80px;
+      height: 58px;
+      border: 3px dashed rgba(255,255,255,0.45);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      transition: border-color 0.15s, background 0.15s;
+      cursor: default;
+    }
+    .ns-slot.filled    { border-style: solid; border-color: #fff; background: rgba(255,255,255,0.2); }
+    .ns-slot.drag-over { border-color: #7aff9e; background: rgba(122,255,158,0.2); }
+
+    .ns-op  { color: rgba(255,255,255,0.7); }
+
+    .ns-result {
+      min-width: 80px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 0 14px;
+    }
+
+    .ns-tile-pool {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+      max-width: 560px;
+      padding: 0 8px;
+    }
+
+    .ns-tile {
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .ns-tile:hover  { transform: translateY(-2px); }
+    .ns-tile.in-slot { opacity: 0.3; pointer-events: none; }
+
+    .ns-progress { font-size: 1rem; font-weight: 600; color: #b8d9f7; }
+    .ns-fb { font-size: 1.2rem; font-weight: 700; min-height: 1.5em; }
+
+    #ns-results { color: #fff; gap: 32px; text-align: center; }
   </style>
 </head>
 <body>
@@ -418,6 +393,39 @@
     <button class="back-btn" onclick="showPage('front-page')">&#8592; Back to Menu</button>
   </div>
 
+  <!-- Number Splash Game -->
+  <div id="numbersplash-page" class="page">
+    <div class="game-level">Number Splash</div>
+    <div class="timer-row">
+      <div class="stopwatch" id="ns-timer">00:00.0</div>
+      <button class="goto-times-btn" onclick="viewNSLeaderboard()">Leaderboard</button>
+    </div>
+    <div class="ns-progress" id="ns-progress">15 numbers remaining</div>
+    <div class="ns-splash-area" id="ns-splash-area"></div>
+    <div class="ns-equation">
+      <div class="ns-slot" id="ns-slot1">_</div>
+      <span class="ns-op">+</span>
+      <div class="ns-slot" id="ns-slot2">_</div>
+      <span class="ns-op">=</span>
+      <div class="ns-result" id="ns-result">?</div>
+    </div>
+    <div class="ns-fb" id="ns-fb"></div>
+    <div class="ns-tile-pool" id="ns-tile-pool"></div>
+    <button class="back-btn" onclick="stopNS(); showPage('addition-page')">&#8592; Back to Addition</button>
+  </div>
+
+  <!-- Number Splash Results -->
+  <div id="ns-results" class="page">
+    <div class="results-heading">Did you beat your high score?</div>
+    <div class="results-time">Your time: <span id="ns-result-time">—</span></div>
+    <div class="leaderboard">
+      <h3>Top 3 Best Times</h3>
+      <div id="ns-leaderboard-rows"></div>
+    </div>
+    <button class="play-again-btn" onclick="startNS()">Play Again</button>
+    <button class="back-btn" onclick="showPage('addition-page')">&#8592; Back to Addition</button>
+  </div>
+
   <!-- Speed Math Game -->
   <div id="speedmath-page" class="page">
     <div class="game-level">Speed Math &mdash; Level 1</div>
@@ -426,7 +434,7 @@
       <button class="goto-times-btn" onclick="viewSpeedMathLeaderboard()">Leaderboard</button>
     </div>
     <div class="sm-score-bar">Score: <span id="sm-score">0</span></div>
-    <div class="game-question" id="sm-question">192 + 684</div>
+    <div class="game-question" id="sm-question"></div>
     <div class="answer-area">
       <input class="answer-input" id="sm-input" type="text" placeholder="Type your answer..."
              onkeydown="if(event.key==='Enter') checkSpeedMath()" />
@@ -482,7 +490,7 @@
   <div id="addition-page" class="page">
     <h1 class="title">Addition</h1>
     <div class="button-grid">
-      <button class="category-btn btn-numbersplash" onclick="alert('Number splash coming soon!')">Number splash</button>
+      <button class="category-btn btn-numbersplash" onclick="startNS()">Number splash</button>
       <button class="category-btn btn-speedmath"    onclick="startSpeedMath()">Speed math</button>
       <button class="category-btn btn-friendsoften" onclick="alert('Friends of ten coming soon!')">Friends of ten</button>
       <button class="category-btn btn-addone"       onclick="startAddOne()">Add one</button>
@@ -511,48 +519,48 @@
   </div>
 
   <script>
-    const subjects = {
-      Inquiry: {
-        icon: '🔍',
-        description: 'Ask big questions, explore the world around you, and discover how things work through investigation!'
-      },
-      Literacy: {
-        icon: '📚',
-        description: 'Read, write, and communicate — build your vocabulary and express your ideas with confidence!'
-      },
-      Wellbeing: {
-        icon: '🌟',
-        description: 'Take care of your mind and body. Learn about healthy habits, emotions, and how to feel your best!'
-      }
-    };
-
-    const addOneLevels = [
-      { level: 1,  question: '11 + 1 = ?',           answer: '12' },
-      { level: 2,  question: '123 + 1 = ?',          answer: '124' },
-      { level: 3,  question: '1029 + 1 = ?',         answer: '1030' },
-      { level: 4,  question: '18257 + 1 = ?',        answer: '18258' },
-      { level: 5,  question: '28754 + 1 = ?',        answer: '28755' },
-      { level: 6,  question: '3946547 + 1 = ?',      answer: '3946548' },
-      { level: 7,  question: '19347497 + 1 = ?',     answer: '19347498' },
-      { level: 8,  question: '904653954 + 1 = ?',    answer: '904653955' },
-      { level: 9,  question: '1234567809 + 1 = ?',   answer: '1234567810' },
-      { level: 10, question: '10293847562 + 1 = ?',  answer: '10293847563' }
-    ];
-
-    let currentAddOneLevel = 0;
-    let timerInterval = null;
-    let timerStart = null;
-    let elapsedMs = 0;
+    // ── Utilities ──────────────────────────────────────────────
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
 
     function formatTime(ms) {
-      const totalTenths = Math.floor(ms / 100);
-      const tenths = totalTenths % 10;
-      const totalSecs = Math.floor(ms / 1000);
-      const secs = totalSecs % 60;
-      const mins = Math.floor(totalSecs / 60);
-      return (mins < 10 ? '0' : '') + mins + ':' +
-             (secs < 10 ? '0' : '') + secs + '.' + tenths;
+      const tenths = Math.floor(ms / 100) % 10;
+      const secs   = Math.floor(ms / 1000) % 60;
+      const mins   = Math.floor(ms / 60000);
+      return (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs + '.' + tenths;
     }
+
+    // ── Subject pages ──────────────────────────────────────────
+    const subjects = {
+      Inquiry:  { icon: '🔍', description: 'Ask big questions, explore the world around you, and discover how things work through investigation!' },
+      Literacy: { icon: '📚', description: 'Read, write, and communicate — build your vocabulary and express your ideas with confidence!' },
+      Wellbeing:{ icon: '🌟', description: 'Take care of your mind and body. Learn about healthy habits, emotions, and how to feel your best!' }
+    };
+    function openSubject(name) {
+      const d = subjects[name];
+      document.getElementById('subject-icon').textContent = d.icon;
+      document.getElementById('subject-title').textContent = name;
+      document.getElementById('subject-description').textContent = d.description;
+      showPage('subject-page');
+    }
+
+    // ── Add One ────────────────────────────────────────────────
+    const addOneLevels = [
+      { level:1,  question:'11 + 1 = ?',          answer:'12' },
+      { level:2,  question:'123 + 1 = ?',         answer:'124' },
+      { level:3,  question:'1029 + 1 = ?',        answer:'1030' },
+      { level:4,  question:'18257 + 1 = ?',       answer:'18258' },
+      { level:5,  question:'28754 + 1 = ?',       answer:'28755' },
+      { level:6,  question:'3946547 + 1 = ?',     answer:'3946548' },
+      { level:7,  question:'19347497 + 1 = ?',    answer:'19347498' },
+      { level:8,  question:'904653954 + 1 = ?',   answer:'904653955' },
+      { level:9,  question:'1234567809 + 1 = ?',  answer:'1234567810' },
+      { level:10, question:'10293847562 + 1 = ?', answer:'10293847563' }
+    ];
+    let currentAddOneLevel = 0;
+    let timerInterval = null, timerStart = null, elapsedMs = 0;
 
     function startTimer() {
       timerStart = Date.now();
@@ -561,229 +569,370 @@
         document.getElementById('addone-timer').textContent = formatTime(elapsedMs);
       }, 100);
     }
-
     function stopTimer() {
-      clearInterval(timerInterval);
-      timerInterval = null;
+      clearInterval(timerInterval); timerInterval = null;
       elapsedMs = Date.now() - timerStart;
     }
-
     function startAddOne() {
-      currentAddOneLevel = 0;
-      elapsedMs = 0;
+      currentAddOneLevel = 0; elapsedMs = 0;
       document.getElementById('addone-timer').textContent = '00:00.0';
       loadAddOneLevel(0);
       showPage('addone-page');
       document.getElementById('addone-input').focus();
       startTimer();
     }
-
-    function loadAddOneLevel(index) {
-      const data = addOneLevels[index];
-      document.getElementById('addone-level').textContent = 'Add 1 — Level ' + data.level;
-      document.getElementById('addone-question').textContent = data.question;
+    function loadAddOneLevel(i) {
+      const d = addOneLevels[i];
+      document.getElementById('addone-level').textContent = 'Add 1 — Level ' + d.level;
+      document.getElementById('addone-question').textContent = d.question;
       document.getElementById('addone-input').value = '';
       document.getElementById('addone-feedback').textContent = '';
       document.getElementById('addone-feedback').className = 'feedback';
     }
-
     function checkAddOne() {
       const input = document.getElementById('addone-input');
-      const feedback = document.getElementById('addone-feedback');
-      const correct = addOneLevels[currentAddOneLevel].answer;
-
-      if (input.value.trim() === correct) {
-        const nextIndex = currentAddOneLevel + 1;
-        if (nextIndex < addOneLevels.length) {
-          feedback.textContent = '✅ Correct! Loading next level...';
-          feedback.className = 'feedback correct';
-          setTimeout(() => {
-            currentAddOneLevel = nextIndex;
-            loadAddOneLevel(currentAddOneLevel);
-            document.getElementById('addone-input').focus();
-          }, 800);
+      const fb    = document.getElementById('addone-feedback');
+      if (input.value.trim() === addOneLevels[currentAddOneLevel].answer) {
+        const next = currentAddOneLevel + 1;
+        if (next < addOneLevels.length) {
+          fb.textContent = '✅ Correct! Loading next level...';
+          fb.className = 'feedback correct';
+          setTimeout(() => { currentAddOneLevel = next; loadAddOneLevel(next); document.getElementById('addone-input').focus(); }, 800);
         } else {
           stopTimer();
           setTimeout(() => showResults(elapsedMs), 800);
         }
       } else {
-        feedback.textContent = '❌ Not quite — try again!';
-        feedback.className = 'feedback wrong';
+        fb.textContent = '❌ Not quite — try again!';
+        fb.className = 'feedback wrong';
       }
     }
-
     function viewTimes() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      renderLeaderboard(null);
-      showPage('addone-results');
+      clearInterval(timerInterval); timerInterval = null;
+      renderLeaderboard(null); showPage('addone-results');
     }
-
     function renderLeaderboard(ms) {
       const scores = JSON.parse(localStorage.getItem('addone_scores') || '[]');
-      if (ms !== null) {
-        scores.push(ms);
-        scores.sort((a, b) => a - b);
-        localStorage.setItem('addone_scores', JSON.stringify(scores));
-      }
-      const top3 = scores.slice(0, 3);
-
+      if (ms !== null) { scores.push(ms); scores.sort((a,b) => a-b); localStorage.setItem('addone_scores', JSON.stringify(scores)); }
       document.getElementById('result-time-display').textContent = ms !== null ? formatTime(ms) : '—';
-
-      const medals = ['🥇', '🥈', '🥉'];
-      const rows = top3.length
-        ? top3.map((t, i) =>
-            `<div class="leaderboard-row">
-               <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
-               <span>${formatTime(t)}</span>
-             </div>`).join('')
+      const medals = ['🥇','🥈','🥉'];
+      document.getElementById('leaderboard-rows').innerHTML = scores.slice(0,3).length
+        ? scores.slice(0,3).map((t,i) => `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`).join('')
         : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish Level 10!</div>';
-      document.getElementById('leaderboard-rows').innerHTML = rows;
     }
-
-    function showResults(ms) {
-      renderLeaderboard(ms);
-      showPage('addone-results');
-    }
-
+    function showResults(ms) { renderLeaderboard(ms); showPage('addone-results'); }
     function resetAddOne() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      currentAddOneLevel = 0;
-      elapsedMs = 0;
+      clearInterval(timerInterval); timerInterval = null;
+      currentAddOneLevel = 0; elapsedMs = 0;
       document.getElementById('addone-timer').textContent = '00:00.0';
       loadAddOneLevel(0);
     }
 
-    // ── Speed Math ──
+    // ── Speed Math ─────────────────────────────────────────────
     const smQuestions = [
-      { q: '192 + 684', a: '876' },
-      { q: '47 + 56',   a: '103' },
-      { q: '315 + 479', a: '794' },
-      { q: '83 + 149',  a: '232' },
-      { q: '261 + 738', a: '999' },
-      { q: '504 + 396', a: '900' },
-      { q: '127 + 865', a: '992' },
-      { q: '73 + 258',  a: '331' },
-      { q: '440 + 387', a: '827' },
-      { q: '619 + 274', a: '893' },
-      { q: '55 + 678',  a: '733' },
-      { q: '302 + 589', a: '891' },
-      { q: '167 + 443', a: '610' },
-      { q: '88 + 712',  a: '800' },
-      { q: '536 + 248', a: '784' },
+      {q:'192 + 684',a:'876'},{q:'47 + 56',a:'103'},{q:'315 + 479',a:'794'},
+      {q:'83 + 149',a:'232'},{q:'261 + 738',a:'999'},{q:'504 + 396',a:'900'},
+      {q:'127 + 865',a:'992'},{q:'73 + 258',a:'331'},{q:'440 + 387',a:'827'},
+      {q:'619 + 274',a:'893'},{q:'55 + 678',a:'733'},{q:'302 + 589',a:'891'},
+      {q:'167 + 443',a:'610'},{q:'88 + 712',a:'800'},{q:'536 + 248',a:'784'},
     ];
-
-    let smTimer = null;
-    let smSecondsLeft = 50;
-    let smScore = 0;
-    let smCurrentQ = 0;
-    let smUsed = [];
+    let smTimer=null, smSecondsLeft=50, smScore=0, smCurrentQ=0, smUsed=[];
 
     function smNextQuestion() {
-      // pick a random question not used recently
-      let available = smQuestions.map((_, i) => i).filter(i => !smUsed.includes(i));
-      if (available.length === 0) { smUsed = []; available = smQuestions.map((_, i) => i); }
-      const idx = available[Math.floor(Math.random() * available.length)];
-      smUsed.push(idx);
-      smCurrentQ = idx;
+      let av = smQuestions.map((_,i)=>i).filter(i=>!smUsed.includes(i));
+      if (!av.length) { smUsed=[]; av=smQuestions.map((_,i)=>i); }
+      const idx = av[Math.floor(Math.random()*av.length)];
+      smUsed.push(idx); smCurrentQ=idx;
       document.getElementById('sm-question').textContent = smQuestions[idx].q + ' = ?';
-      document.getElementById('sm-input').value = '';
-      document.getElementById('sm-feedback').textContent = '';
-      document.getElementById('sm-feedback').className = 'feedback';
+      document.getElementById('sm-input').value='';
+      document.getElementById('sm-feedback').textContent='';
+      document.getElementById('sm-feedback').className='feedback';
       document.getElementById('sm-input').focus();
     }
-
     function startSpeedMath() {
-      smScore = 0;
-      smSecondsLeft = 50;
-      smUsed = [];
-      document.getElementById('sm-score').textContent = '0';
-      document.getElementById('sm-countdown').textContent = '50';
-      document.getElementById('sm-countdown').className = 'countdown';
-      smNextQuestion();
-      showPage('speedmath-page');
+      smScore=0; smSecondsLeft=50; smUsed=[];
+      document.getElementById('sm-score').textContent='0';
+      document.getElementById('sm-countdown').textContent='50';
+      document.getElementById('sm-countdown').className='countdown';
+      smNextQuestion(); showPage('speedmath-page');
       clearInterval(smTimer);
       smTimer = setInterval(() => {
         smSecondsLeft--;
         document.getElementById('sm-countdown').textContent = smSecondsLeft;
-        if (smSecondsLeft <= 10) document.getElementById('sm-countdown').className = 'countdown urgent';
-        if (smSecondsLeft <= 0) {
-          clearInterval(smTimer);
-          smTimer = null;
-          showSpeedMathResults();
-        }
+        if (smSecondsLeft<=10) document.getElementById('sm-countdown').className='countdown urgent';
+        if (smSecondsLeft<=0) { clearInterval(smTimer); smTimer=null; showSpeedMathResults(); }
       }, 1000);
     }
-
     function checkSpeedMath() {
-      const input = document.getElementById('sm-input');
-      const feedback = document.getElementById('sm-feedback');
-      if (input.value.trim() === smQuestions[smCurrentQ].a) {
-        smScore++;
-        document.getElementById('sm-score').textContent = smScore;
-        feedback.textContent = '✅ Correct!';
-        feedback.className = 'feedback correct';
-        setTimeout(smNextQuestion, 500);
-      } else {
-        feedback.textContent = '❌ Try again!';
-        feedback.className = 'feedback wrong';
-        input.value = '';
-      }
+      const input=document.getElementById('sm-input'), fb=document.getElementById('sm-feedback');
+      if (input.value.trim()===smQuestions[smCurrentQ].a) {
+        smScore++; document.getElementById('sm-score').textContent=smScore;
+        fb.textContent='✅ Correct!'; fb.className='feedback correct';
+        setTimeout(smNextQuestion,500);
+      } else { fb.textContent='❌ Try again!'; fb.className='feedback wrong'; input.value=''; }
     }
-
     function viewSpeedMathLeaderboard() {
       stopSpeedMath();
-      const scores = JSON.parse(localStorage.getItem('speedmath_scores') || '[]');
-      const top3 = scores.slice(0, 3);
-      document.getElementById('sm-final-score').textContent = '—';
-      const medals = ['🥇', '🥈', '🥉'];
-      document.getElementById('sm-leaderboard-rows').innerHTML = top3.length
-        ? top3.map((s, i) =>
-            `<div class="leaderboard-row">
-               <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
-               <span>${s} correct</span>
-             </div>`).join('')
+      const scores=JSON.parse(localStorage.getItem('speedmath_scores')||'[]');
+      document.getElementById('sm-final-score').textContent='—';
+      const medals=['🥇','🥈','🥉'];
+      document.getElementById('sm-leaderboard-rows').innerHTML = scores.slice(0,3).length
+        ? scores.slice(0,3).map((s,i)=>`<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${s} correct</span></div>`).join('')
         : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No scores yet — finish a game!</div>';
       showPage('speedmath-results');
     }
-
     function showSpeedMathResults() {
-      const scores = JSON.parse(localStorage.getItem('speedmath_scores') || '[]');
-      scores.push(smScore);
-      scores.sort((a, b) => b - a);
-      localStorage.setItem('speedmath_scores', JSON.stringify(scores));
-      const top3 = scores.slice(0, 3);
-
-      document.getElementById('sm-final-score').textContent = smScore;
-
-      const medals = ['🥇', '🥈', '🥉'];
-      document.getElementById('sm-leaderboard-rows').innerHTML = top3.map((s, i) =>
-        `<div class="leaderboard-row">
-           <span><span class="rank">${medals[i]}</span> #${i + 1}</span>
-           <span>${s} correct</span>
-         </div>`
-      ).join('');
-
+      const scores=JSON.parse(localStorage.getItem('speedmath_scores')||'[]');
+      scores.push(smScore); scores.sort((a,b)=>b-a);
+      localStorage.setItem('speedmath_scores',JSON.stringify(scores));
+      document.getElementById('sm-final-score').textContent=smScore;
+      const medals=['🥇','🥈','🥉'];
+      document.getElementById('sm-leaderboard-rows').innerHTML=scores.slice(0,3).map((s,i)=>
+        `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${s} correct</span></div>`).join('');
       showPage('speedmath-results');
     }
+    function stopSpeedMath() { clearInterval(smTimer); smTimer=null; }
 
-    function stopSpeedMath() {
-      clearInterval(smTimer);
-      smTimer = null;
+    // ── Number Splash ──────────────────────────────────────────
+    const nsColors = [
+      'linear-gradient(135deg,#e84393,#c0166f)',
+      'linear-gradient(135deg,#f4a020,#d07a00)',
+      'linear-gradient(135deg,#27c47a,#159552)',
+      'linear-gradient(135deg,#a855f7,#7c22d4)',
+      'linear-gradient(135deg,#2196f3,#0b5ea8)',
+      'linear-gradient(135deg,#ff6b35,#b83a00)',
+      'linear-gradient(135deg,#00bcd4,#006978)',
+    ];
+    const nsTileColors = [
+      '#e84393','#f4a020','#27c47a','#a855f7','#2196f3','#ff6b35','#00bcd4',
+      '#e53935','#43a047','#fb8c00','#8e24aa','#00acc1','#c0ca33','#d81b60','#6d4c41',
+    ];
+
+    let nsPairs=[], nsTiles=[], nsSlotVal=[null,null], nsSlotTileIdx=[null,null];
+    let nsRemaining=0, nsTimerInterval=null, nsTimerStart=null, nsElapsed=0;
+    let nsDragIdx=null, nsDragGhost=null, nsDragMoved=false, nsDragStartX=0, nsDragStartY=0;
+
+    function generateNSPairs() {
+      const used=new Set(), pairs=[];
+      let tries=0;
+      while (pairs.length<15 && tries<100000) {
+        tries++;
+        const a=Math.floor(Math.random()*44)+5;
+        const b=Math.floor(Math.random()*44)+5;
+        const t=a+b;
+        if (!used.has(a) && !used.has(b) && t>=10 && t<=99) {
+          used.add(a); used.add(b);
+          pairs.push({a,b,target:t,done:false,id:pairs.length});
+        }
+      }
+      return pairs;
     }
 
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+    function startNS() {
+      nsPairs = generateNSPairs();
+      nsRemaining = 15;
+      nsSlotVal = [null,null]; nsSlotTileIdx = [null,null];
+      nsElapsed = 0;
+
+      // build tile list (30 tiles, shuffled)
+      nsTiles = [];
+      nsPairs.forEach((p,pi) => {
+        nsTiles.push({value:p.a, pairId:pi, inSlot:-1, used:false});
+        nsTiles.push({value:p.b, pairId:pi, inSlot:-1, used:false});
+      });
+      nsTiles.sort(()=>Math.random()-0.5);
+
+      renderNSSplash();
+      renderNSTiles();
+      updateNSEquation();
+      document.getElementById('ns-timer').textContent='00:00.0';
+      document.getElementById('ns-progress').textContent='15 numbers remaining';
+      document.getElementById('ns-fb').textContent='';
+      document.getElementById('ns-fb').className='ns-fb';
+      showPage('numbersplash-page');
+
+      clearInterval(nsTimerInterval);
+      nsTimerStart = Date.now();
+      nsTimerInterval = setInterval(() => {
+        nsElapsed = Date.now() - nsTimerStart;
+        document.getElementById('ns-timer').textContent = formatTime(nsElapsed);
+      }, 100);
     }
 
-    function openSubject(name) {
-      const data = subjects[name];
-      document.getElementById('subject-icon').textContent = data.icon;
-      document.getElementById('subject-title').textContent = name;
-      document.getElementById('subject-description').textContent = data.description;
-      showPage('subject-page');
+    function renderNSSplash() {
+      const area = document.getElementById('ns-splash-area');
+      area.innerHTML = '';
+      // Place 15 numbers in a 5×3 grid with random offsets within each cell
+      const cols=5, rows=3;
+      const positions = [];
+      for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) positions.push({r,c});
+      positions.sort(()=>Math.random()-0.5);
+
+      nsPairs.forEach((p,i) => {
+        const pos = positions[i];
+        const cellW = 100/cols, cellH = 100/rows;
+        const left = pos.c*cellW + Math.random()*(cellW-12) + 2;
+        const top  = pos.r*cellH + Math.random()*(cellH-22) + 4;
+        const el = document.createElement('div');
+        el.className = 'ns-target';
+        el.id = 'ns-target-'+p.id;
+        el.textContent = p.target;
+        el.style.background = nsColors[i % nsColors.length];
+        el.style.left = left+'%';
+        el.style.top  = top+'%';
+        area.appendChild(el);
+      });
+    }
+
+    function renderNSTiles() {
+      const pool = document.getElementById('ns-tile-pool');
+      pool.innerHTML = '';
+      nsTiles.forEach((tile,idx) => {
+        if (tile.used) return;
+        const el = document.createElement('div');
+        el.className = 'ns-tile' + (tile.inSlot>=0?' in-slot':'');
+        el.id = 'ns-tile-'+idx;
+        el.textContent = tile.value;
+        el.style.background = nsTileColors[idx % nsTileColors.length];
+        el.setAttribute('data-idx', idx);
+        el.addEventListener('pointerdown', e => nsPointerDown(e, idx));
+        pool.appendChild(el);
+      });
+    }
+
+    function updateNSEquation() {
+      const s1=document.getElementById('ns-slot1'), s2=document.getElementById('ns-slot2');
+      const res=document.getElementById('ns-result');
+      s1.textContent = nsSlotVal[0]!==null ? nsSlotVal[0] : '_';
+      s1.className = 'ns-slot'+(nsSlotVal[0]!==null?' filled':'');
+      s2.textContent = nsSlotVal[1]!==null ? nsSlotVal[1] : '_';
+      s2.className = 'ns-slot'+(nsSlotVal[1]!==null?' filled':'');
+      res.textContent = (nsSlotVal[0]!==null && nsSlotVal[1]!==null) ? nsSlotVal[0]+nsSlotVal[1] : '?';
+    }
+
+    // Pointer-based drag (works for both mouse and touch)
+    function nsPointerDown(e, idx) {
+      const tile = nsTiles[idx];
+      if (tile.used || tile.inSlot>=0) return;
+      e.preventDefault();
+      nsDragIdx = idx; nsDragMoved = false;
+      nsDragStartX = e.clientX; nsDragStartY = e.clientY;
+      document.addEventListener('pointermove', nsPointerMove);
+      document.addEventListener('pointerup',   nsPointerUp);
+    }
+
+    function nsPointerMove(e) {
+      if (nsDragIdx===null) return;
+      const dx=e.clientX-nsDragStartX, dy=e.clientY-nsDragStartY;
+      if (!nsDragMoved && (Math.abs(dx)>6||Math.abs(dy)>6)) {
+        nsDragMoved = true;
+        // create ghost
+        const src = document.getElementById('ns-tile-'+nsDragIdx);
+        nsDragGhost = src.cloneNode(true);
+        nsDragGhost.style.cssText=`position:fixed;pointer-events:none;opacity:0.85;z-index:999;cursor:grabbing;`;
+        document.body.appendChild(nsDragGhost);
+      }
+      if (nsDragGhost) {
+        nsDragGhost.style.left=(e.clientX - nsDragGhost.offsetWidth/2)+'px';
+        nsDragGhost.style.top =(e.clientY - nsDragGhost.offsetHeight/2)+'px';
+      }
+      nsHighlightSlots(e.clientX, e.clientY);
+    }
+
+    function nsPointerUp(e) {
+      document.removeEventListener('pointermove', nsPointerMove);
+      document.removeEventListener('pointerup',   nsPointerUp);
+      if (nsDragGhost) { document.body.removeChild(nsDragGhost); nsDragGhost=null; }
+      ['ns-slot1','ns-slot2'].forEach(id=>document.getElementById(id).classList.remove('drag-over'));
+
+      if (nsDragIdx===null) return;
+      const idx=nsDragIdx; nsDragIdx=null;
+
+      if (!nsDragMoved) {
+        // tap: auto-fill first empty slot
+        nsPlaceInSlot(idx, nsSlotVal[0]===null ? 0 : (nsSlotVal[1]===null ? 1 : -1));
+      } else {
+        // drag: drop on slot if hovering over one
+        const x=e.clientX, y=e.clientY;
+        const r1=document.getElementById('ns-slot1').getBoundingClientRect();
+        const r2=document.getElementById('ns-slot2').getBoundingClientRect();
+        if (x>=r1.left&&x<=r1.right&&y>=r1.top&&y<=r1.bottom&&nsSlotVal[0]===null)      nsPlaceInSlot(idx,0);
+        else if (x>=r2.left&&x<=r2.right&&y>=r2.top&&y<=r2.bottom&&nsSlotVal[1]===null) nsPlaceInSlot(idx,1);
+      }
+    }
+
+    function nsHighlightSlots(x,y) {
+      ['ns-slot1','ns-slot2'].forEach((id,si) => {
+        const el=document.getElementById(id);
+        const r=el.getBoundingClientRect();
+        if (x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom&&nsSlotVal[si]===null) el.classList.add('drag-over');
+        else el.classList.remove('drag-over');
+      });
+    }
+
+    function nsPlaceInSlot(tileIdx, slotIdx) {
+      if (slotIdx<0) return;
+      const tile=nsTiles[tileIdx];
+      if (tile.used||tile.inSlot>=0) return;
+      nsSlotVal[slotIdx]=tile.value; nsSlotTileIdx[slotIdx]=tileIdx; tile.inSlot=slotIdx;
+      renderNSTiles(); updateNSEquation();
+      if (nsSlotVal[0]!==null && nsSlotVal[1]!==null) setTimeout(checkNS, 350);
+    }
+
+    function checkNS() {
+      const sum = nsSlotVal[0]+nsSlotVal[1];
+      const match = nsPairs.find(p=>!p.done && p.target===sum);
+      const fb = document.getElementById('ns-fb');
+
+      if (match) {
+        match.done=true;
+        nsTiles[nsSlotTileIdx[0]].used=true; nsTiles[nsSlotTileIdx[1]].used=true;
+        nsRemaining--;
+        const el=document.getElementById('ns-target-'+match.id);
+        if (el) el.classList.add('done');
+        fb.textContent='✅ Correct!'; fb.className='ns-fb feedback correct';
+        document.getElementById('ns-progress').textContent=nsRemaining+' number'+(nsRemaining!==1?'s':'')+' remaining';
+        nsSlotVal=[null,null]; nsSlotTileIdx=[null,null];
+        renderNSTiles(); updateNSEquation();
+        if (nsRemaining===0) {
+          clearInterval(nsTimerInterval);
+          setTimeout(()=>showNSResults(nsElapsed), 800);
+        } else {
+          setTimeout(()=>{ fb.textContent=''; fb.className='ns-fb'; }, 1000);
+        }
+      } else {
+        fb.textContent='❌ Not quite — try another pair!'; fb.className='ns-fb feedback wrong';
+        nsTiles[nsSlotTileIdx[0]].inSlot=-1; nsTiles[nsSlotTileIdx[1]].inSlot=-1;
+        nsSlotVal=[null,null]; nsSlotTileIdx=[null,null];
+        renderNSTiles(); updateNSEquation();
+        setTimeout(()=>{ fb.textContent=''; fb.className='ns-fb'; }, 1200);
+      }
+    }
+
+    function stopNS() { clearInterval(nsTimerInterval); nsTimerInterval=null; }
+
+    function showNSResults(ms) {
+      const scores=JSON.parse(localStorage.getItem('ns_scores')||'[]');
+      scores.push(ms); scores.sort((a,b)=>a-b);
+      localStorage.setItem('ns_scores',JSON.stringify(scores));
+      document.getElementById('ns-result-time').textContent=formatTime(ms);
+      renderNSLeaderboard();
+      showPage('ns-results');
+    }
+
+    function viewNSLeaderboard() {
+      stopNS();
+      document.getElementById('ns-result-time').textContent='—';
+      renderNSLeaderboard();
+      showPage('ns-results');
+    }
+
+    function renderNSLeaderboard() {
+      const scores=JSON.parse(localStorage.getItem('ns_scores')||'[]');
+      const medals=['🥇','🥈','🥉'];
+      document.getElementById('ns-leaderboard-rows').innerHTML = scores.slice(0,3).length
+        ? scores.slice(0,3).map((t,i)=>`<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`).join('')
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — clear all 15!</div>';
     }
   </script>
 
