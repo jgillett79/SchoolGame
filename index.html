@@ -961,6 +961,7 @@
     let nsPairs=[], nsTiles=[], nsSlotVal=[null,null], nsSlotTileIdx=[null,null];
     let nsRemaining=0, nsTimerInterval=null, nsTimerStart=null, nsElapsed=0;
     let nsDragIdx=null, nsDragGhost=null, nsDragMoved=false, nsDragStartX=0, nsDragStartY=0;
+    let nsHintTimeout=null;
 
     function generateNSPairs() {
       const used=new Set(), pairs=[];
@@ -979,6 +980,7 @@
     }
 
     function startNS() {
+      if (nsHintTimeout) { clearTimeout(nsHintTimeout); nsHintTimeout=null; }
       nsPairs = generateNSPairs();
       nsRemaining = 15;
       nsSlotVal = [null,null]; nsSlotTileIdx = [null,null];
@@ -1133,11 +1135,15 @@
     }
 
     function checkNS() {
-      const sum = nsSlotVal[0]+nsSlotVal[1];
-      const match = nsPairs.find(p=>!p.done && p.target===sum);
+      const tileA = nsTiles[nsSlotTileIdx[0]];
+      const tileB = nsTiles[nsSlotTileIdx[1]];
       const fb = document.getElementById('ns-fb');
+      // Correct only if both tiles belong to the same pair (strict pairId check)
+      const isCorrect = tileA.pairId === tileB.pairId && !nsPairs[tileA.pairId].done;
+      const match = isCorrect ? nsPairs[tileA.pairId] : null;
 
       if (match) {
+        if (nsHintTimeout) { clearTimeout(nsHintTimeout); nsHintTimeout=null; }
         match.done=true;
         nsTiles[nsSlotTileIdx[0]].used=true; nsTiles[nsSlotTileIdx[1]].used=true;
         nsRemaining--;
@@ -1157,20 +1163,25 @@
         fb.textContent='❌ Wrong pair — swapping in the right number!'; fb.className='ns-fb feedback wrong';
         const tileAIdx = nsSlotTileIdx[0];
         const tileBIdx = nsSlotTileIdx[1];
-        // Find A's correct partner (same pairId, other tile)
+        // Find A's correct partner (same pairId, other tile, not yet used)
         const partnerIdx = nsTiles.findIndex((t,i) =>
           t.pairId === nsTiles[tileAIdx].pairId && i !== tileAIdx && !t.used
         );
         nsTiles[tileAIdx].inSlot = -1;
         nsTiles[tileBIdx].inSlot = -1;
         nsSlotVal=[null,null]; nsSlotTileIdx=[null,null];
+        // Clear any previous hint
+        if (nsHintTimeout) { clearTimeout(nsHintTimeout); nsHintTimeout=null; }
+        nsTiles.forEach(t => { t.hint=false; });
         if (partnerIdx >= 0 && partnerIdx !== tileBIdx) {
-          // Swap partner and B in the array — partner now occupies B's slot position
+          // Swap partner into B's position so partner sits next to A visually
           [nsTiles[partnerIdx], nsTiles[tileBIdx]] = [nsTiles[tileBIdx], nsTiles[partnerIdx]];
-          // The partner is now at tileBIdx; grab a reference to it and highlight
-          const hintTile = nsTiles[tileBIdx];
-          hintTile.hint = true;
-          setTimeout(() => { hintTile.hint = false; renderNSTiles(); }, 2500);
+          nsTiles[tileBIdx].hint = true;
+          nsHintTimeout = setTimeout(() => {
+            nsTiles[tileBIdx].hint = false;
+            renderNSTiles();
+            nsHintTimeout = null;
+          }, 2500);
         }
         renderNSTiles(); updateNSEquation();
         setTimeout(()=>{ fb.textContent=''; fb.className='ns-fb'; }, 1400);
