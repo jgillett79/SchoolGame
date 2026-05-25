@@ -245,6 +245,11 @@
     /* ── Add One ── */
     #addone-results { color: #fff; gap: 32px; text-align: center; }
 
+    /* ── Friends of Ten ── */
+    #fot-page { color: #fff; gap: 18px; padding: 10px 0; }
+    #fot-results { color: #fff; gap: 32px; text-align: center; }
+    .fot-scatter-tile { position: absolute; }
+
     /* ── Number Splash ── */
     #numbersplash-page {
       color: #fff;
@@ -393,6 +398,38 @@
     <button class="back-btn" onclick="showPage('front-page')">&#8592; Back to Menu</button>
   </div>
 
+  <!-- Friends of Ten Game -->
+  <div id="fot-page" class="page">
+    <div class="game-level" id="fot-level">Friends of Ten &mdash; Level 1/10</div>
+    <div class="timer-row">
+      <div class="stopwatch" id="fot-timer">00:00.0</div>
+      <button class="goto-times-btn" onclick="viewFOTLeaderboard()">Leaderboard</button>
+    </div>
+    <div class="ns-progress" id="fot-progress">7 pairs remaining</div>
+    <div class="ns-splash-area" id="fot-splash-area"></div>
+    <div class="ns-equation">
+      <div class="ns-slot" id="fot-slot1">_</div>
+      <span class="ns-op">+</span>
+      <div class="ns-slot" id="fot-slot2">_</div>
+      <span class="ns-op">=</span>
+      <div class="ns-result">10</div>
+    </div>
+    <div class="ns-fb" id="fot-fb"></div>
+    <button class="back-btn" onclick="stopFOT(); showPage('addition-page')">&#8592; Back to Addition</button>
+  </div>
+
+  <!-- Friends of Ten Results -->
+  <div id="fot-results" class="page">
+    <div class="results-heading">Did you beat your high score?</div>
+    <div class="results-time">Your time: <span id="fot-result-time">—</span></div>
+    <div class="leaderboard">
+      <h3>Top 3 Best Times</h3>
+      <div id="fot-leaderboard-rows"></div>
+    </div>
+    <button class="play-again-btn" onclick="startFOT()">Play Again</button>
+    <button class="back-btn" onclick="showPage('addition-page')">&#8592; Back to Addition</button>
+  </div>
+
   <!-- Number Splash Game -->
   <div id="numbersplash-page" class="page">
     <div class="game-level">Number Splash</div>
@@ -492,7 +529,7 @@
     <div class="button-grid">
       <button class="category-btn btn-numbersplash" onclick="startNS()">Number splash</button>
       <button class="category-btn btn-speedmath"    onclick="startSpeedMath()">Speed math</button>
-      <button class="category-btn btn-friendsoften" onclick="alert('Friends of ten coming soon!')">Friends of ten</button>
+      <button class="category-btn btn-friendsoften" onclick="startFOT()">Friends of ten</button>
       <button class="category-btn btn-addone"       onclick="startAddOne()">Add one</button>
     </div>
     <button class="back-btn" onclick="showPage('math-page')">&#8592; Back to Math</button>
@@ -692,6 +729,214 @@
       showPage('speedmath-results');
     }
     function stopSpeedMath() { clearInterval(smTimer); smTimer=null; }
+
+    // ── Friends of Ten ─────────────────────────────────────────
+    const fotPairOptions = [[1,9],[2,8],[3,7],[4,6],[5,5]];
+    const FOT_PAIRS = 7; // 14 tiles per level
+    const FOT_LEVELS = 10;
+
+    let fotLevel=0, fotPairs=[], fotTiles=[], fotSlotVal=[null,null], fotSlotTileIdx=[null,null];
+    let fotPairsLeft=0, fotTimerInterval=null, fotTimerStart=null, fotElapsed=0;
+    let fotDragIdx=null, fotDragGhost=null, fotDragMoved=false, fotDragStartX=0, fotDragStartY=0;
+
+    function startFOT() {
+      fotLevel = 1; fotElapsed = 0;
+      document.getElementById('fot-timer').textContent = '00:00.0';
+      clearInterval(fotTimerInterval);
+      fotTimerStart = Date.now();
+      fotTimerInterval = setInterval(() => {
+        fotElapsed = Date.now() - fotTimerStart;
+        document.getElementById('fot-timer').textContent = formatTime(fotElapsed);
+      }, 100);
+      loadFOTLevel();
+      showPage('fot-page');
+    }
+
+    function loadFOTLevel() {
+      fotPairs = [];
+      for (let i=0; i<FOT_PAIRS; i++) {
+        const opt = fotPairOptions[Math.floor(Math.random()*fotPairOptions.length)];
+        fotPairs.push({a:opt[0], b:opt[1], done:false, id:i});
+      }
+      fotPairsLeft = FOT_PAIRS;
+      fotSlotVal = [null,null]; fotSlotTileIdx = [null,null];
+
+      fotTiles = [];
+      fotPairs.forEach((p,pi) => {
+        fotTiles.push({value:p.a, pairId:pi, inSlot:-1, used:false});
+        fotTiles.push({value:p.b, pairId:pi, inSlot:-1, used:false});
+      });
+      fotTiles.sort(() => Math.random()-0.5);
+
+      document.getElementById('fot-level').textContent = `Friends of Ten — Level ${fotLevel}/${FOT_LEVELS}`;
+      document.getElementById('fot-progress').textContent = `${fotPairsLeft} pairs remaining`;
+      document.getElementById('fot-fb').textContent = '';
+      document.getElementById('fot-fb').className = 'ns-fb';
+      renderFOTSplash();
+      updateFOTEquation();
+    }
+
+    function renderFOTSplash() {
+      const area = document.getElementById('fot-splash-area');
+      area.innerHTML = '';
+      const cols=5, rows=3;
+      const positions=[];
+      for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) positions.push({r,c});
+      positions.sort(()=>Math.random()-0.5);
+
+      fotTiles.forEach((tile, idx) => {
+        if (tile.used) return;
+        const pos = positions[idx] || positions[idx % positions.length];
+        const cellW=100/cols, cellH=100/rows;
+        const left = pos.c*cellW + Math.random()*(cellW-14)+2;
+        const top  = pos.r*cellH + Math.random()*(cellH-22)+4;
+
+        const el = document.createElement('div');
+        el.className = 'ns-tile fot-scatter-tile' + (tile.inSlot>=0?' in-slot':'');
+        el.id = 'fot-tile-'+idx;
+        el.textContent = tile.value;
+        el.style.left = left+'%'; el.style.top = top+'%';
+        el.style.background = nsTileColors[idx % nsTileColors.length];
+        el.style.fontSize = '1.4rem';
+        el.addEventListener('pointerdown', e => fotPointerDown(e, idx));
+        area.appendChild(el);
+      });
+    }
+
+    function updateFOTEquation() {
+      const s1=document.getElementById('fot-slot1'), s2=document.getElementById('fot-slot2');
+      s1.textContent = fotSlotVal[0]!==null ? fotSlotVal[0] : '_';
+      s1.className = 'ns-slot'+(fotSlotVal[0]!==null?' filled':'');
+      s2.textContent = fotSlotVal[1]!==null ? fotSlotVal[1] : '_';
+      s2.className = 'ns-slot'+(fotSlotVal[1]!==null?' filled':'');
+    }
+
+    function fotPointerDown(e, idx) {
+      const tile=fotTiles[idx];
+      if (tile.used||tile.inSlot>=0) return;
+      e.preventDefault();
+      fotDragIdx=idx; fotDragMoved=false;
+      fotDragStartX=e.clientX; fotDragStartY=e.clientY;
+      document.addEventListener('pointermove', fotPointerMove);
+      document.addEventListener('pointerup',   fotPointerUp);
+    }
+
+    function fotPointerMove(e) {
+      if (fotDragIdx===null) return;
+      const dx=e.clientX-fotDragStartX, dy=e.clientY-fotDragStartY;
+      if (!fotDragMoved&&(Math.abs(dx)>6||Math.abs(dy)>6)) {
+        fotDragMoved=true;
+        const src=document.getElementById('fot-tile-'+fotDragIdx);
+        fotDragGhost=src.cloneNode(true);
+        fotDragGhost.style.cssText='position:fixed;pointer-events:none;opacity:0.85;z-index:999;cursor:grabbing;';
+        document.body.appendChild(fotDragGhost);
+      }
+      if (fotDragGhost) {
+        fotDragGhost.style.left=(e.clientX-fotDragGhost.offsetWidth/2)+'px';
+        fotDragGhost.style.top =(e.clientY-fotDragGhost.offsetHeight/2)+'px';
+      }
+      ['fot-slot1','fot-slot2'].forEach((id,si)=>{
+        const el=document.getElementById(id), r=el.getBoundingClientRect();
+        if (e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom&&fotSlotVal[si]===null) el.classList.add('drag-over');
+        else el.classList.remove('drag-over');
+      });
+    }
+
+    function fotPointerUp(e) {
+      document.removeEventListener('pointermove', fotPointerMove);
+      document.removeEventListener('pointerup',   fotPointerUp);
+      if (fotDragGhost) { document.body.removeChild(fotDragGhost); fotDragGhost=null; }
+      ['fot-slot1','fot-slot2'].forEach(id=>document.getElementById(id).classList.remove('drag-over'));
+      if (fotDragIdx===null) return;
+      const idx=fotDragIdx; fotDragIdx=null;
+      if (!fotDragMoved) {
+        fotPlaceInSlot(idx, fotSlotVal[0]===null?0:(fotSlotVal[1]===null?1:-1));
+      } else {
+        const x=e.clientX, y=e.clientY;
+        const r1=document.getElementById('fot-slot1').getBoundingClientRect();
+        const r2=document.getElementById('fot-slot2').getBoundingClientRect();
+        if (x>=r1.left&&x<=r1.right&&y>=r1.top&&y<=r1.bottom&&fotSlotVal[0]===null) fotPlaceInSlot(idx,0);
+        else if (x>=r2.left&&x<=r2.right&&y>=r2.top&&y<=r2.bottom&&fotSlotVal[1]===null) fotPlaceInSlot(idx,1);
+      }
+    }
+
+    function fotPlaceInSlot(tileIdx, slotIdx) {
+      if (slotIdx<0) return;
+      const tile=fotTiles[tileIdx];
+      if (tile.used||tile.inSlot>=0) return;
+      fotSlotVal[slotIdx]=tile.value; fotSlotTileIdx[slotIdx]=tileIdx; tile.inSlot=slotIdx;
+      const el=document.getElementById('fot-tile-'+tileIdx);
+      if (el) el.classList.add('in-slot');
+      updateFOTEquation();
+      if (fotSlotVal[0]!==null&&fotSlotVal[1]!==null) setTimeout(checkFOT, 350);
+    }
+
+    function checkFOT() {
+      const sum=fotSlotVal[0]+fotSlotVal[1];
+      const fb=document.getElementById('fot-fb');
+      if (sum===10) {
+        fotTiles[fotSlotTileIdx[0]].used=true; fotTiles[fotSlotTileIdx[1]].used=true;
+        fotPairsLeft--;
+        [fotSlotTileIdx[0],fotSlotTileIdx[1]].forEach(ti=>{
+          const el=document.getElementById('fot-tile-'+ti);
+          if (el){el.style.transition='opacity 0.4s,transform 0.4s';el.style.opacity='0';el.style.transform='scale(0.4)';}
+        });
+        fb.textContent='✅ Friends of Ten!'; fb.className='ns-fb feedback correct';
+        document.getElementById('fot-progress').textContent=fotPairsLeft+' pairs remaining';
+        fotSlotVal=[null,null]; fotSlotTileIdx=[null,null];
+        updateFOTEquation();
+        if (fotPairsLeft===0) {
+          if (fotLevel<FOT_LEVELS) {
+            setTimeout(()=>{
+              fotLevel++;
+              fb.textContent=`⭐ Level ${fotLevel-1} complete! Loading Level ${fotLevel}...`;
+              setTimeout(loadFOTLevel, 1200);
+            }, 600);
+          } else {
+            clearInterval(fotTimerInterval);
+            setTimeout(()=>showFOTResults(fotElapsed), 800);
+          }
+        } else {
+          setTimeout(()=>{fb.textContent='';fb.className='ns-fb';},1000);
+        }
+      } else {
+        fb.textContent='❌ Those don\'t make 10 — try again!'; fb.className='ns-fb feedback wrong';
+        fotTiles[fotSlotTileIdx[0]].inSlot=-1; fotTiles[fotSlotTileIdx[1]].inSlot=-1;
+        [fotSlotTileIdx[0],fotSlotTileIdx[1]].forEach(ti=>{
+          const el=document.getElementById('fot-tile-'+ti);
+          if(el) el.classList.remove('in-slot');
+        });
+        fotSlotVal=[null,null]; fotSlotTileIdx=[null,null];
+        updateFOTEquation();
+        setTimeout(()=>{fb.textContent='';fb.className='ns-fb';},1200);
+      }
+    }
+
+    function stopFOT() { clearInterval(fotTimerInterval); fotTimerInterval=null; }
+
+    function showFOTResults(ms) {
+      const scores=JSON.parse(localStorage.getItem('fot_scores')||'[]');
+      scores.push(ms); scores.sort((a,b)=>a-b);
+      localStorage.setItem('fot_scores',JSON.stringify(scores));
+      document.getElementById('fot-result-time').textContent=formatTime(ms);
+      renderFOTLeaderboard();
+      showPage('fot-results');
+    }
+
+    function viewFOTLeaderboard() {
+      stopFOT();
+      document.getElementById('fot-result-time').textContent='—';
+      renderFOTLeaderboard();
+      showPage('fot-results');
+    }
+
+    function renderFOTLeaderboard() {
+      const scores=JSON.parse(localStorage.getItem('fot_scores')||'[]');
+      const medals=['🥇','🥈','🥉'];
+      document.getElementById('fot-leaderboard-rows').innerHTML=scores.slice(0,3).length
+        ?scores.slice(0,3).map((t,i)=>`<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`).join('')
+        :'<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish all 10 levels!</div>';
+    }
 
     // ── Number Splash ──────────────────────────────────────────
     const nsColors = [
