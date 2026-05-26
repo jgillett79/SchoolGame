@@ -1466,6 +1466,7 @@
     ];
     let ecQIdx=0, ecScore=0, ecSelected=new Set(), ecPlaced=new Set();
     let ecTimerInterval=null, ecTimerStart=null, ecElapsed=0;
+    let ecRound=[];
 
     function stopECTimer() {
       clearInterval(ecTimerInterval); ecTimerInterval=null;
@@ -1473,6 +1474,7 @@
 
     function startECGame() {
       stopECTimer();
+      ecRound = [...ecQData].sort(()=>Math.random()-0.5);
       ecQIdx=0; ecScore=0; ecElapsed=0;
       document.getElementById('ecg-timer').textContent = '00:00.0';
       showPage('ec-game-page');
@@ -1485,8 +1487,8 @@
     }
 
     function renderECQ() {
-      const q = ecQData[ecQIdx];
-      document.getElementById('ecg-progress').textContent = `Level ${ecQIdx+1} of ${ecQData.length}`;
+      const q = ecRound[ecQIdx];
+      document.getElementById('ecg-progress').textContent = `Level ${ecQIdx+1} of ${ecRound.length}`;
       document.getElementById('ecg-score').textContent    = `Score: ${ecScore}`;
       document.getElementById('ecg-feedback').textContent = '';
       document.getElementById('ecg-feedback').className   = 'ecg-feedback';
@@ -1533,7 +1535,7 @@
     }
 
     function checkECAnswer() {
-      const q = ecQData[ecQIdx];
+      const q = ecRound[ecQIdx];
       const fb = document.getElementById('ecg-feedback');
       let correct = false;
 
@@ -1566,7 +1568,7 @@
       document.getElementById('ecg-check-btn').disabled = true;
       setTimeout(() => {
         ecQIdx++;
-        if (ecQIdx >= ecQData.length) {
+        if (ecQIdx >= ecRound.length) {
           stopECTimer();
           const scores = JSON.parse(localStorage.getItem('ec_scores') || '[]');
           scores.push(ecElapsed);
