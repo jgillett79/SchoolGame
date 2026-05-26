@@ -520,9 +520,9 @@
     <h1 class="title">Embedded Clause</h1>
     <div class="ec-cards">
 
-      <div class="ec-card-game" onclick="startECGame()">
+      <div class="ec-card-game" onclick="showPage('ec-choice-page')">
         <span>Q1. What is an embedded clause?</span>
-        <span>▶ Play game</span>
+        <span>▶ Tap to start</span>
       </div>
 
       <div class="ec-card" onclick="this.classList.toggle('open')">
@@ -549,6 +549,50 @@
 
     </div>
     <button class="back-btn" onclick="showPage('sentence-structure-page')">&#8592; Back to Sentence Structure</button>
+  </div>
+
+  <!-- Embedded Clause: Yes/No Choice -->
+  <div id="ec-choice-page" class="page">
+    <h1 class="title">Embedded Clause</h1>
+    <p style="color:#dde;font-size:1.1rem;text-align:center;max-width:500px;">Do you know what an embedded clause is?</p>
+    <div style="display:flex;flex-direction:column;gap:16px;width:100%;max-width:460px;">
+      <button class="category-btn btn-embedded" style="width:100%;height:80px;font-size:1.1rem;" onclick="startECGame()">
+        Yes, I know what an embedded clause is
+      </button>
+      <button class="category-btn btn-dependent" style="width:100%;height:80px;font-size:1.1rem;" onclick="showPage('ec-explain-page')">
+        No, I don't know what an embedded clause is
+      </button>
+    </div>
+    <button class="back-btn" onclick="showPage('embedded-clause-page')">&#8592; Back</button>
+  </div>
+
+  <!-- Embedded Clause: Explanation for "No" -->
+  <div id="ec-explain-page" class="page">
+    <h1 class="title">Embedded Clause</h1>
+    <div class="ec-cards">
+      <div class="ec-card" style="cursor:default;">
+        <div class="ec-question" style="cursor:default;">
+          <span>What is an embedded clause?</span>
+        </div>
+        <div class="ec-answer" style="display:block;">
+          An embedded clause is a group of words slotted <strong>inside</strong> a main clause to give extra information about a noun. It usually starts with <em>who</em>, <em>which</em>, or <em>that</em> — and the main sentence still makes sense if you remove it.
+          <div class="ec-example">"The cat, <strong>which had orange fur</strong>, sat on the mat."</div>
+        </div>
+      </div>
+      <div class="ec-card" style="cursor:default;">
+        <div class="ec-question" style="cursor:default;">
+          <span>How do I punctuate it?</span>
+        </div>
+        <div class="ec-answer" style="display:block;">
+          Put a <strong>comma</strong> before and after the embedded clause to separate it from the rest of the sentence.
+          <div class="ec-example">"My friend, <strong>who lives next door</strong>, is very funny."</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
+      <button class="back-btn" onclick="startECGame()">▶ Now try the game!</button>
+      <button class="back-btn" onclick="showPage('ec-choice-page')">&#8592; Back</button>
+    </div>
   </div>
 
   <!-- Embedded Clause Game -->
