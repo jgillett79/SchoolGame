@@ -188,6 +188,18 @@
     .ecg-check:disabled { opacity:0.4; cursor:not-allowed; }
     .ecg-meta { font-size:0.88rem; color:#bbc; text-align:center; margin-bottom:4px; }
     .ecg-score { font-size:1rem; color:#fff; font-weight:600; text-align:center; margin-bottom:14px; }
+    .ecg-topbar {
+      display:flex; align-items:center; justify-content:space-between;
+      max-width:640px; width:100%; margin:0 auto 10px;
+      gap:12px;
+    }
+    .ecg-timer { font-size:1.3rem; font-weight:700; color:#fff; letter-spacing:1px; }
+    .ecg-lb-btn {
+      padding:8px 18px; border-radius:20px; border:none; cursor:pointer;
+      background:rgba(255,255,255,0.18); color:#fff; font-weight:700; font-size:0.9rem;
+      transition:background 0.2s;
+    }
+    .ecg-lb-btn:hover { background:rgba(255,255,255,0.3); }
 
     /* Wellbeing sub-menu */
     .btn-emotions       { background: linear-gradient(135deg,#e84393,#c0166f); }
@@ -542,22 +554,41 @@
   <!-- Embedded Clause Game -->
   <div id="ec-game-page" class="page">
     <h1 class="title">Embedded Clause</h1>
+    <div class="ecg-topbar">
+      <span class="ecg-timer" id="ecg-timer">00:00.0</span>
+      <button class="ecg-lb-btn" onclick="showECLeaderboard()">Leaderboard</button>
+    </div>
     <p class="ecg-meta" id="ecg-progress"></p>
-    <p class="ecg-score"  id="ecg-score"></p>
+    <p class="ecg-score" id="ecg-score"></p>
     <div class="ecg-card">
       <p class="ecg-instruction" id="ecg-instruction"></p>
       <div class="ecg-sentence" id="ecg-sentence"></div>
       <p class="ecg-feedback" id="ecg-feedback"></p>
       <button class="ecg-check" id="ecg-check-btn" onclick="checkECAnswer()">Check</button>
     </div>
-    <button class="back-btn" style="margin-top:18px" onclick="showPage('embedded-clause-page')">&#8592; Back</button>
+    <button class="back-btn" style="margin-top:18px" onclick="stopECTimer();showPage('embedded-clause-page')">&#8592; Back</button>
   </div>
 
   <!-- Embedded Clause Results -->
   <div id="ec-results-page" class="page">
     <h1 class="title">Nice Work!</h1>
-    <p id="ecg-final" style="font-size:1.4rem;color:#fff;text-align:center;margin:20px 0;font-weight:700;"></p>
-    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;margin-top:8px;">
+    <p id="ecg-final-score" style="font-size:1.3rem;color:#fff;text-align:center;margin:10px 0;font-weight:700;"></p>
+    <p id="ecg-final-time"  style="font-size:1.1rem;color:#b8d9f7;text-align:center;margin:0 0 20px;"></p>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
+      <button class="back-btn" onclick="startECGame()">Play Again</button>
+      <button class="back-btn" onclick="showECLeaderboard()">Leaderboard</button>
+      <button class="back-btn" onclick="showPage('embedded-clause-page')">&#8592; Back</button>
+    </div>
+  </div>
+
+  <!-- Embedded Clause Leaderboard -->
+  <div id="ec-leaderboard-page" class="page">
+    <h1 class="title">Leaderboard</h1>
+    <h2 style="color:#b8d9f7;text-align:center;margin-bottom:6px;font-size:1rem;">Did you beat your best time?</h2>
+    <div class="leaderboard-card" style="max-width:420px;width:100%;margin:0 auto 20px;">
+      <div id="ec-leaderboard-rows"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
       <button class="back-btn" onclick="startECGame()">Play Again</button>
       <button class="back-btn" onclick="showPage('embedded-clause-page')">&#8592; Back</button>
     </div>
@@ -1418,26 +1449,38 @@
     }
 
     // ── Embedded Clause Game ─────────────────────────────────────────
+    // Levels are ordered: 1-3 highlight the clause, 4-6 place the commas
     const ecQData = [
-      { type:'highlight', words:['The','dog','which','was','very','muddy','ran','inside'],           clause:[2,3,4,5] },
-      { type:'highlight', words:['The','teacher','who','loves','reading','gave','us','a','book'],    clause:[2,3,4] },
-      { type:'highlight', words:['The','car','which','was','bright','red','stopped','suddenly'],     clause:[2,3,4,5] },
-      { type:'commas',    words:['My','friend','who','lives','next','door','is','very','funny'],      commas:[1,5] },
-      { type:'commas',    words:['The','cat','which','had','orange','fur','sat','on','the','mat'],   commas:[1,5] },
-      { type:'commas',    words:['My','sister','who','is','very','tall','plays','basketball'],        commas:[1,5] },
+      { type:'highlight', words:['The','dog','which','was','very','muddy','ran','inside'],         clause:[2,3,4,5] },
+      { type:'highlight', words:['The','teacher','who','loves','reading','gave','us','a','book'],  clause:[2,3,4] },
+      { type:'highlight', words:['The','car','which','was','bright','red','stopped','suddenly'],   clause:[2,3,4,5] },
+      { type:'commas',    words:['My','friend','who','lives','next','door','is','very','funny'],    commas:[1,5] },
+      { type:'commas',    words:['The','cat','which','had','orange','fur','sat','on','the','mat'], commas:[1,5] },
+      { type:'commas',    words:['My','sister','who','is','very','tall','plays','basketball'],      commas:[1,5] },
     ];
-    let ecQIdx=0, ecScore=0, ecSelected=new Set(), ecPlaced=new Set(), ecShuffled=[];
+    let ecQIdx=0, ecScore=0, ecSelected=new Set(), ecPlaced=new Set();
+    let ecTimerInterval=null, ecTimerStart=null, ecElapsed=0;
+
+    function stopECTimer() {
+      clearInterval(ecTimerInterval); ecTimerInterval=null;
+    }
 
     function startECGame() {
-      ecShuffled = [...ecQData].sort(()=>Math.random()-0.5);
-      ecQIdx=0; ecScore=0;
+      stopECTimer();
+      ecQIdx=0; ecScore=0; ecElapsed=0;
+      document.getElementById('ecg-timer').textContent = '00:00.0';
       showPage('ec-game-page');
       renderECQ();
+      ecTimerStart = Date.now();
+      ecTimerInterval = setInterval(() => {
+        ecElapsed = Date.now() - ecTimerStart;
+        document.getElementById('ecg-timer').textContent = formatTime(ecElapsed);
+      }, 100);
     }
 
     function renderECQ() {
-      const q = ecShuffled[ecQIdx];
-      document.getElementById('ecg-progress').textContent = `Question ${ecQIdx+1} of ${ecShuffled.length}`;
+      const q = ecQData[ecQIdx];
+      document.getElementById('ecg-progress').textContent = `Level ${ecQIdx+1} of ${ecQData.length}`;
       document.getElementById('ecg-score').textContent    = `Score: ${ecScore}`;
       document.getElementById('ecg-feedback').textContent = '';
       document.getElementById('ecg-feedback').className   = 'ecg-feedback';
@@ -1470,7 +1513,7 @@
           wrap.appendChild(el);
           if (i < q.words.length - 1) {
             const slot = document.createElement('span');
-            slot.className  = 'ecg-slot';
+            slot.className   = 'ecg-slot';
             slot.textContent = ',';
             slot.dataset.idx = i;
             slot.onclick = () => {
@@ -1484,7 +1527,7 @@
     }
 
     function checkECAnswer() {
-      const q = ecShuffled[ecQIdx];
+      const q = ecQData[ecQIdx];
       const fb = document.getElementById('ecg-feedback');
       let correct = false;
 
@@ -1517,14 +1560,30 @@
       document.getElementById('ecg-check-btn').disabled = true;
       setTimeout(() => {
         ecQIdx++;
-        if (ecQIdx >= ecShuffled.length) {
-          document.getElementById('ecg-final').textContent =
-            `You got ${ecScore} out of ${ecShuffled.length}!`;
+        if (ecQIdx >= ecQData.length) {
+          stopECTimer();
+          const scores = JSON.parse(localStorage.getItem('ec_scores') || '[]');
+          scores.push(ecElapsed);
+          scores.sort((a,b) => a-b);
+          localStorage.setItem('ec_scores', JSON.stringify(scores));
+          document.getElementById('ecg-final-score').textContent = `You got ${ecScore} out of ${ecQData.length}!`;
+          document.getElementById('ecg-final-time').textContent  = `Time: ${formatTime(ecElapsed)}`;
           showPage('ec-results-page');
         } else {
           renderECQ();
         }
       }, 2000);
+    }
+
+    function showECLeaderboard() {
+      const medals = ['🥇','🥈','🥉'];
+      const scores = JSON.parse(localStorage.getItem('ec_scores') || '[]');
+      document.getElementById('ec-leaderboard-rows').innerHTML = scores.slice(0,3).length
+        ? scores.slice(0,3).map((t,i) =>
+            `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`
+          ).join('')
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish all 6 levels!</div>';
+      showPage('ec-leaderboard-page');
     }
   </script>
 
