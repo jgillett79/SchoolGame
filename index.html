@@ -1451,12 +1451,18 @@
     // ── Embedded Clause Game ─────────────────────────────────────────
     // Levels are ordered: 1-3 highlight the clause, 4-6 place the commas
     const ecQData = [
-      { type:'highlight', words:['The','dog','which','was','very','muddy','ran','inside'],         clause:[2,3,4,5] },
-      { type:'highlight', words:['The','teacher','who','loves','reading','gave','us','a','book'],  clause:[2,3,4] },
-      { type:'highlight', words:['The','car','which','was','bright','red','stopped','suddenly'],   clause:[2,3,4,5] },
-      { type:'commas',    words:['My','friend','who','lives','next','door','is','very','funny'],    commas:[1,5] },
-      { type:'commas',    words:['The','cat','which','had','orange','fur','sat','on','the','mat'], commas:[1,5] },
-      { type:'commas',    words:['My','sister','who','is','very','tall','plays','basketball'],      commas:[1,5] },
+      // Levels 1–5: highlight the embedded clause
+      { type:'highlight', words:['The','dog','which','was','very','muddy','ran','inside'],           clause:[2,3,4,5] },
+      { type:'highlight', words:['The','teacher','who','loves','reading','gave','us','a','book'],    clause:[2,3,4] },
+      { type:'highlight', words:['The','car','which','was','bright','red','stopped','suddenly'],     clause:[2,3,4,5] },
+      { type:'highlight', words:['The','boy','who','won','the','race','smiled','happily'],           clause:[2,3,4,5] },
+      { type:'highlight', words:['The','bird','which','had','blue','feathers','sang','all','day'],   clause:[2,3,4,5] },
+      // Levels 6–10: place the commas
+      { type:'commas',    words:['My','friend','who','lives','next','door','is','very','funny'],     commas:[1,5] },
+      { type:'commas',    words:['The','cat','which','had','orange','fur','sat','on','the','mat'],   commas:[1,5] },
+      { type:'commas',    words:['My','sister','who','is','very','tall','plays','basketball'],        commas:[1,5] },
+      { type:'commas',    words:['The','old','house','which','stood','on','the','hill','was','dark'], commas:[2,7] },
+      { type:'commas',    words:['My','brother','who','plays','football','scored','a','goal'],        commas:[1,4] },
     ];
     let ecQIdx=0, ecScore=0, ecSelected=new Set(), ecPlaced=new Set();
     let ecTimerInterval=null, ecTimerStart=null, ecElapsed=0;
@@ -1566,9 +1572,7 @@
           scores.push(ecElapsed);
           scores.sort((a,b) => a-b);
           localStorage.setItem('ec_scores', JSON.stringify(scores));
-          document.getElementById('ecg-final-score').textContent = `You got ${ecScore} out of ${ecQData.length}!`;
-          document.getElementById('ecg-final-time').textContent  = `Time: ${formatTime(ecElapsed)}`;
-          showPage('ec-results-page');
+          showECLeaderboard();
         } else {
           renderECQ();
         }
@@ -1582,7 +1586,7 @@
         ? scores.slice(0,3).map((t,i) =>
             `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`
           ).join('')
-        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish all 6 levels!</div>';
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish all 10 levels!</div>';
       showPage('ec-leaderboard-page');
     }
   </script>
