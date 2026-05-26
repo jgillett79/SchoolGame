@@ -127,6 +127,68 @@
       font-style: italic; color: #fff;
     }
 
+    /* Q1 play-game card style */
+    .ec-card-game {
+      background: linear-gradient(135deg,#f4a020,#d07a00);
+      border-radius: 16px;
+      padding: 20px 22px;
+      cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 1.05rem; font-weight: 700; color: #fff;
+      border: 2px solid rgba(255,255,255,0.25);
+      transition: opacity 0.2s;
+    }
+    .ec-card-game:hover { opacity: 0.88; }
+
+    /* Embedded Clause Game */
+    .ecg-card {
+      background: rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.22);
+      border-radius: 16px;
+      padding: 22px 20px;
+      max-width: 640px; width: 100%; margin: 0 auto;
+    }
+    .ecg-instruction { font-size:0.98rem; color:#dde; margin-bottom:18px; text-align:center; }
+    .ecg-sentence {
+      display: flex; flex-wrap: wrap; gap: 6px 2px;
+      justify-content: center; margin-bottom: 20px; align-items: center;
+    }
+    .ecg-word {
+      padding: 8px 11px; border-radius: 8px;
+      background: rgba(255,255,255,0.15); color: #fff;
+      font-size: 1.05rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
+      user-select: none;
+    }
+    .ecg-word:hover { background: rgba(255,255,255,0.28); }
+    .ecg-word.sel  { background: #f4a020; transform: scale(1.08); }
+    .ecg-word.plain { cursor: default; }
+    .ecg-word.plain:hover { background: rgba(255,255,255,0.15); transform:none; }
+    .ecg-word.show-correct { background: #43a047 !important; transform: none; }
+    .ecg-slot {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 36px; border-radius: 6px;
+      border: 2px dashed rgba(255,255,255,0.3);
+      color: transparent; font-size: 1.2rem; font-weight: 900;
+      cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .ecg-slot:hover  { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1); }
+    .ecg-slot.active { border-style: solid; border-color: #f4a020; color: #f4a020; background: rgba(244,160,32,0.15); }
+    .ecg-slot.show-correct { border-color: #43a047 !important; color: #43a047 !important; background: rgba(67,160,71,0.2) !important; }
+    .ecg-feedback { min-height:26px; font-size:1rem; font-weight:700; text-align:center; color:#fff; margin:6px 0 14px; }
+    .ecg-feedback.correct { color:#6ee86e; }
+    .ecg-feedback.wrong   { color:#ff8a8a; }
+    .ecg-check {
+      display:block; margin:0 auto;
+      padding: 12px 42px;
+      background: linear-gradient(135deg,#f4a020,#d07a00);
+      color:#fff; border:none; border-radius:30px;
+      font-size:1.05rem; font-weight:700; cursor:pointer; transition:opacity 0.2s;
+    }
+    .ecg-check:disabled { opacity:0.4; cursor:not-allowed; }
+    .ecg-meta { font-size:0.88rem; color:#bbc; text-align:center; margin-bottom:4px; }
+    .ecg-score { font-size:1rem; color:#fff; font-weight:600; text-align:center; margin-bottom:14px; }
+
     /* Wellbeing sub-menu */
     .btn-emotions       { background: linear-gradient(135deg,#e84393,#c0166f); }
     .btn-friends        { background: linear-gradient(135deg,#f4a020,#d07a00); }
@@ -446,15 +508,9 @@
     <h1 class="title">Embedded Clause</h1>
     <div class="ec-cards">
 
-      <div class="ec-card" onclick="this.classList.toggle('open')">
-        <div class="ec-question">
-          <span>Q1. What is an embedded clause?</span>
-          <span class="ec-arrow">▼</span>
-        </div>
-        <div class="ec-answer">
-          An embedded clause is a group of words slotted <strong>inside</strong> a main clause to give extra information about a noun. It usually starts with a relative pronoun like <em>who</em>, <em>which</em>, or <em>that</em> — and the main sentence still makes sense if you remove it.
-          <div class="ec-example">"The cat, <strong>which had orange fur</strong>, sat on the mat."</div>
-        </div>
+      <div class="ec-card-game" onclick="startECGame()">
+        <span>Q1. What is an embedded clause?</span>
+        <span>▶ Play game</span>
       </div>
 
       <div class="ec-card" onclick="this.classList.toggle('open')">
@@ -481,6 +537,30 @@
 
     </div>
     <button class="back-btn" onclick="showPage('sentence-structure-page')">&#8592; Back to Sentence Structure</button>
+  </div>
+
+  <!-- Embedded Clause Game -->
+  <div id="ec-game-page" class="page">
+    <h1 class="title">Embedded Clause</h1>
+    <p class="ecg-meta" id="ecg-progress"></p>
+    <p class="ecg-score"  id="ecg-score"></p>
+    <div class="ecg-card">
+      <p class="ecg-instruction" id="ecg-instruction"></p>
+      <div class="ecg-sentence" id="ecg-sentence"></div>
+      <p class="ecg-feedback" id="ecg-feedback"></p>
+      <button class="ecg-check" id="ecg-check-btn" onclick="checkECAnswer()">Check</button>
+    </div>
+    <button class="back-btn" style="margin-top:18px" onclick="showPage('embedded-clause-page')">&#8592; Back</button>
+  </div>
+
+  <!-- Embedded Clause Results -->
+  <div id="ec-results-page" class="page">
+    <h1 class="title">Nice Work!</h1>
+    <p id="ecg-final" style="font-size:1.4rem;color:#fff;text-align:center;margin:20px 0;font-weight:700;"></p>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;margin-top:8px;">
+      <button class="back-btn" onclick="startECGame()">Play Again</button>
+      <button class="back-btn" onclick="showPage('embedded-clause-page')">&#8592; Back</button>
+    </div>
   </div>
 
   <!-- Inquiry Sub-Menu -->
@@ -1335,6 +1415,116 @@
       document.getElementById('ns-leaderboard-rows').innerHTML = scores.slice(0,3).length
         ? scores.slice(0,3).map((t,i)=>`<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`).join('')
         : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — clear all 15!</div>';
+    }
+
+    // ── Embedded Clause Game ─────────────────────────────────────────
+    const ecQData = [
+      { type:'highlight', words:['The','dog','which','was','very','muddy','ran','inside'],           clause:[2,3,4,5] },
+      { type:'highlight', words:['The','teacher','who','loves','reading','gave','us','a','book'],    clause:[2,3,4] },
+      { type:'highlight', words:['The','car','which','was','bright','red','stopped','suddenly'],     clause:[2,3,4,5] },
+      { type:'commas',    words:['My','friend','who','lives','next','door','is','very','funny'],      commas:[1,5] },
+      { type:'commas',    words:['The','cat','which','had','orange','fur','sat','on','the','mat'],   commas:[1,5] },
+      { type:'commas',    words:['My','sister','who','is','very','tall','plays','basketball'],        commas:[1,5] },
+    ];
+    let ecQIdx=0, ecScore=0, ecSelected=new Set(), ecPlaced=new Set(), ecShuffled=[];
+
+    function startECGame() {
+      ecShuffled = [...ecQData].sort(()=>Math.random()-0.5);
+      ecQIdx=0; ecScore=0;
+      showPage('ec-game-page');
+      renderECQ();
+    }
+
+    function renderECQ() {
+      const q = ecShuffled[ecQIdx];
+      document.getElementById('ecg-progress').textContent = `Question ${ecQIdx+1} of ${ecShuffled.length}`;
+      document.getElementById('ecg-score').textContent    = `Score: ${ecScore}`;
+      document.getElementById('ecg-feedback').textContent = '';
+      document.getElementById('ecg-feedback').className   = 'ecg-feedback';
+      document.getElementById('ecg-check-btn').disabled   = false;
+      ecSelected = new Set(); ecPlaced = new Set();
+
+      const wrap = document.getElementById('ecg-sentence');
+      const instr = document.getElementById('ecg-instruction');
+      wrap.innerHTML = '';
+
+      if (q.type === 'highlight') {
+        instr.textContent = 'Tap every word that belongs to the embedded clause, then press Check.';
+        q.words.forEach((word, i) => {
+          const el = document.createElement('span');
+          el.className = 'ecg-word';
+          el.textContent = word;
+          el.dataset.idx = i;
+          el.onclick = () => {
+            if (ecSelected.has(i)) { ecSelected.delete(i); el.classList.remove('sel'); }
+            else                   { ecSelected.add(i);    el.classList.add('sel'); }
+          };
+          wrap.appendChild(el);
+        });
+      } else {
+        instr.textContent = 'Tap between words to place commas where they belong, then press Check.';
+        q.words.forEach((word, i) => {
+          const el = document.createElement('span');
+          el.className = 'ecg-word plain';
+          el.textContent = word;
+          wrap.appendChild(el);
+          if (i < q.words.length - 1) {
+            const slot = document.createElement('span');
+            slot.className  = 'ecg-slot';
+            slot.textContent = ',';
+            slot.dataset.idx = i;
+            slot.onclick = () => {
+              if (ecPlaced.has(i)) { ecPlaced.delete(i); slot.classList.remove('active'); }
+              else                 { ecPlaced.add(i);    slot.classList.add('active'); }
+            };
+            wrap.appendChild(slot);
+          }
+        });
+      }
+    }
+
+    function checkECAnswer() {
+      const q = ecShuffled[ecQIdx];
+      const fb = document.getElementById('ecg-feedback');
+      let correct = false;
+
+      if (q.type === 'highlight') {
+        const target = new Set(q.clause);
+        correct = target.size === ecSelected.size && [...target].every(i => ecSelected.has(i));
+        if (!correct) {
+          document.querySelectorAll('#ecg-sentence .ecg-word').forEach(el => {
+            if (target.has(+el.dataset.idx)) el.classList.add('show-correct');
+          });
+        }
+      } else {
+        const target = new Set(q.commas);
+        correct = target.size === ecPlaced.size && [...target].every(i => ecPlaced.has(i));
+        if (!correct) {
+          document.querySelectorAll('#ecg-sentence .ecg-slot').forEach(el => {
+            if (target.has(+el.dataset.idx)) el.classList.add('show-correct');
+          });
+        }
+      }
+
+      if (correct) {
+        ecScore++;
+        fb.textContent = '✅ Correct!';
+        fb.className = 'ecg-feedback correct';
+      } else {
+        fb.textContent = '❌ Not quite — the correct answer is shown in green.';
+        fb.className = 'ecg-feedback wrong';
+      }
+      document.getElementById('ecg-check-btn').disabled = true;
+      setTimeout(() => {
+        ecQIdx++;
+        if (ecQIdx >= ecShuffled.length) {
+          document.getElementById('ecg-final').textContent =
+            `You got ${ecScore} out of ${ecShuffled.length}!`;
+          showPage('ec-results-page');
+        } else {
+          renderECQ();
+        }
+      }, 2000);
     }
   </script>
 
