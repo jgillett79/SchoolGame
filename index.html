@@ -89,6 +89,12 @@
     .btn-punctuation { background: linear-gradient(135deg,#27c47a,#159552); }
     .btn-text        { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
+    /* Sentence Structure sub-menu */
+    .btn-compound   { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-embedded   { background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-independent{ background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-dependent  { background: linear-gradient(135deg,#a855f7,#7c22d4); }
+
     /* Wellbeing sub-menu */
     .btn-emotions       { background: linear-gradient(135deg,#e84393,#c0166f); }
     .btn-friends        { background: linear-gradient(135deg,#f4a020,#d07a00); }
@@ -383,12 +389,24 @@
   <div id="literacy-page" class="page">
     <h1 class="title">Literacy</h1>
     <div class="button-grid">
-      <button class="category-btn btn-sentence"    onclick="alert('Sentence structure coming soon!')">Sentence structure</button>
+      <button class="category-btn btn-sentence"    onclick="showPage('sentence-structure-page')">Sentence structure</button>
       <button class="category-btn btn-paragraphs"  onclick="alert('Paragraphs coming soon!')">Paragraphs</button>
       <button class="category-btn btn-punctuation" onclick="alert('Punctuation coming soon!')">Punctuation</button>
       <button class="category-btn btn-text"        onclick="alert('Text coming soon!')">Text</button>
     </div>
     <button class="back-btn" onclick="showPage('front-page')">&#8592; Back to Menu</button>
+  </div>
+
+  <!-- Sentence Structure Sub-Menu -->
+  <div id="sentence-structure-page" class="page">
+    <h1 class="title">Sentence Structure</h1>
+    <div class="button-grid">
+      <button class="category-btn btn-compound"    onclick="alert('Compound sentence coming soon!')">Compound sentence</button>
+      <button class="category-btn btn-embedded"    onclick="alert('Embedded clause coming soon!')">Embedded clause</button>
+      <button class="category-btn btn-independent" onclick="alert('Independent clause coming soon!')">Independent clause</button>
+      <button class="category-btn btn-dependent"   onclick="alert('Dependent clause coming soon!')">Dependent clause</button>
+    </div>
+    <button class="back-btn" onclick="showPage('literacy-page')">&#8592; Back to Literacy</button>
   </div>
 
   <!-- Inquiry Sub-Menu -->
