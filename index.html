@@ -964,29 +964,54 @@
     let nsHintTimeout=null;
 
     function generateNSPairs() {
-      const used=new Set(), pairs=[];
+      const usedVals=new Set(), usedTargets=new Set(), pairs=[];
       let tries=0;
-      while (pairs.length<15 && tries<100000) {
+      while (pairs.length<15 && tries<200000) {
         tries++;
-        const a=Math.floor(Math.random()*44)+5;
+        const a=Math.floor(Math.random()*44)+5;  // 5–48
         const b=Math.floor(Math.random()*44)+5;
         const t=a+b;
-        if (!used.has(a) && !used.has(b) && t>=10 && t<=99) {
-          used.add(a); used.add(b);
+        // a!==b: no identical addends in same pair; unique targets: no two targets look the same
+        if (a!==b && !usedVals.has(a) && !usedVals.has(b) && !usedTargets.has(t)) {
+          usedVals.add(a); usedVals.add(b); usedTargets.add(t);
           pairs.push({a,b,target:t,done:false,id:pairs.length});
         }
       }
       return pairs;
     }
 
+    // Dry-run: every pair must have exactly 2 tiles with matching pairId, no tile shared
+    function validateNSPuzzle(pairs, tiles) {
+      for (let pi=0; pi<pairs.length; pi++) {
+        const own = tiles.filter(t=>t.pairId===pi);
+        if (own.length!==2) return false;
+        if (own[0].value===own[1].value) return false; // identical addends
+        const expectedSum = pairs[pi].a + pairs[pi].b;
+        if (own[0].value+own[1].value !== expectedSum) return false;
+      }
+      return true;
+    }
+
     function startNS() {
       if (nsHintTimeout) { clearTimeout(nsHintTimeout); nsHintTimeout=null; }
-      nsPairs = generateNSPairs();
-      nsRemaining = 15;
+
+      // Regenerate until we have a fully valid 15-pair puzzle (guard against rare failures)
+      let attempts=0;
+      do {
+        nsPairs = generateNSPairs();
+        attempts++;
+      } while (nsPairs.length<15 && attempts<20);
+
+      if (nsPairs.length<15) {
+        alert('Could not generate a valid puzzle — please try again.');
+        return;
+      }
+
+      nsRemaining = nsPairs.length;   // use actual count, never hardcoded
       nsSlotVal = [null,null]; nsSlotTileIdx = [null,null];
       nsElapsed = 0;
 
-      // build tile list (30 tiles, shuffled)
+      // Build tile list (2 per pair, shuffled)
       nsTiles = [];
       nsPairs.forEach((p,pi) => {
         nsTiles.push({value:p.a, pairId:pi, inSlot:-1, used:false, hint:false});
@@ -994,11 +1019,17 @@
       });
       nsTiles.sort(()=>Math.random()-0.5);
 
+      // Safety check before showing anything to the player
+      if (!validateNSPuzzle(nsPairs, nsTiles)) {
+        startNS(); // retry (extremely unlikely to recurse more than once)
+        return;
+      }
+
       renderNSSplash();
       renderNSTiles();
       updateNSEquation();
       document.getElementById('ns-timer').textContent='00:00.0';
-      document.getElementById('ns-progress').textContent='15 numbers remaining';
+      document.getElementById('ns-progress').textContent=nsPairs.length+' numbers remaining';
       document.getElementById('ns-fb').textContent='';
       document.getElementById('ns-fb').className='ns-fb';
       showPage('numbersplash-page');
