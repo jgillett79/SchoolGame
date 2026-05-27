@@ -207,6 +207,34 @@
     }
     .ecg-lb-btn:hover { background:rgba(255,255,255,0.3); }
 
+    /* Bus Stop game */
+    .bs-topbar { display:flex; align-items:center; justify-content:space-between; max-width:500px; width:100%; margin:0 auto 10px; gap:12px; }
+    .bs-timer  { font-size:1.3rem; font-weight:700; color:#fff; letter-spacing:1px; }
+    .bs-lb-btn { padding:8px 18px; border-radius:20px; border:none; cursor:pointer; background:rgba(255,255,255,0.18); color:#fff; font-weight:700; font-size:0.9rem; transition:background 0.2s; }
+    .bs-lb-btn:hover { background:rgba(255,255,255,0.3); }
+    .bs-card { background:rgba(255,255,255,0.12); border:2px solid rgba(255,255,255,0.22); border-radius:16px; padding:28px 24px; max-width:500px; width:100%; margin:0 auto; text-align:center; }
+    .bs-progress   { font-size:0.88rem; color:#bbc; margin-bottom:6px; }
+    .bs-score-line { font-size:1rem; color:#fff; font-weight:600; margin-bottom:18px; }
+    /* Bus stop bracket diagram — answer sits ABOVE the line, just like the real method */
+    .bs-diagram   { display:inline-flex; flex-direction:column; margin:16px auto 24px; }
+    .bs-ans-row   { display:flex; }
+    .bs-ans-space { flex-shrink:0; } /* dynamically sized to match divisor width */
+    .bs-input {
+      font-size:2.8rem; font-weight:800; color:#ffe082;
+      background:transparent; border:none; outline:none;
+      text-align:center; width:180px; letter-spacing:6px;
+      border-bottom:3px dashed rgba(255,255,255,0.35);
+    }
+    .bs-prob-row  { display:flex; align-items:flex-end; }
+    .bs-divisor   { font-size:2.8rem; font-weight:800; color:#fff; border-right:5px solid #fff; padding:4px 10px 6px 4px; line-height:1; }
+    .bs-bracket   { border-top:5px solid #fff; padding:6px 20px 4px 16px; }
+    .bs-dividend  { font-size:2.8rem; font-weight:800; color:#fff; letter-spacing:10px; line-height:1; }
+    .bs-check { display:block; margin:4px auto 0; padding:12px 36px; background:linear-gradient(135deg,#e84393,#c0166f); color:#fff; border:none; border-radius:30px; font-size:1.05rem; font-weight:700; cursor:pointer; transition:opacity 0.2s; }
+    .bs-check:disabled { opacity:0.4; cursor:not-allowed; }
+    .bs-feedback { min-height:26px; font-size:1rem; font-weight:700; text-align:center; color:#fff; margin-top:14px; }
+    .bs-feedback.correct { color:#6ee86e; }
+    .bs-feedback.wrong   { color:#ff8a8a; }
+
     /* Wellbeing sub-menu */
     .btn-emotions       { background: linear-gradient(135deg,#e84393,#c0166f); }
     .btn-friends        { background: linear-gradient(135deg,#f4a020,#d07a00); }
@@ -810,12 +838,58 @@
   <div id="division-page" class="page">
     <h1 class="title">Division</h1>
     <div class="button-grid">
-      <button class="category-btn btn-busstop"    onclick="alert('Bus stop coming soon!')">Bus stop</button>
+      <button class="category-btn btn-busstop"    onclick="startBusStop()">Bus stop</button>
       <button class="category-btn btn-placevalue" onclick="alert('Place value coming soon!')">Place value</button>
       <button class="category-btn btn-makeown"    onclick="alert('Make your own coming soon!')">Make your own</button>
       <button class="category-btn btn-mind"       onclick="alert('Mind coming soon!')">Mind</button>
     </div>
     <button class="back-btn" onclick="showPage('math-page')">&#8592; Back to Math</button>
+  </div>
+
+  <!-- Bus Stop Game -->
+  <div id="busstop-page" class="page">
+    <h1 class="title">Bus Stop</h1>
+    <div class="bs-topbar">
+      <span class="bs-timer" id="bs-timer">00:00.0</span>
+      <button class="bs-lb-btn" onclick="showBSLeaderboard()">Leaderboard</button>
+    </div>
+    <div class="bs-card">
+      <p class="bs-progress"   id="bs-progress"></p>
+      <p class="bs-score-line" id="bs-score-line"></p>
+      <p style="color:#dde;font-size:0.9rem;margin-bottom:2px;">Write your answer above the line, just like the bus stop method.</p>
+
+      <!-- Bus stop diagram: answer above line, divisor+dividend below -->
+      <div class="bs-diagram">
+        <div class="bs-ans-row">
+          <div class="bs-ans-space" id="bs-ans-space"></div>
+          <input class="bs-input" id="bs-answer" type="number" placeholder="?" autocomplete="off" inputmode="numeric" />
+        </div>
+        <div class="bs-prob-row">
+          <span class="bs-divisor"  id="bs-divisor"></span>
+          <div  class="bs-bracket">
+            <span class="bs-dividend" id="bs-dividend"></span>
+          </div>
+        </div>
+      </div>
+
+      <button class="bs-check" id="bs-check-btn" onclick="checkBusStop()">Check</button>
+      <p class="bs-feedback" id="bs-feedback"></p>
+    </div>
+    <button class="back-btn" style="margin-top:18px" onclick="stopBSTimer();showPage('division-page')">&#8592; Back</button>
+  </div>
+
+  <!-- Bus Stop Leaderboard -->
+  <div id="busstop-lb-page" class="page">
+    <h1 class="title">Leaderboard</h1>
+    <p id="bs-your-time" style="font-size:1.15rem;color:#fff;font-weight:700;text-align:center;margin-bottom:4px;"></p>
+    <h2 style="color:#b8d9f7;text-align:center;margin-bottom:6px;font-size:1rem;">Did you beat your best time?</h2>
+    <div class="leaderboard-card" style="max-width:420px;width:100%;margin:0 auto 20px;">
+      <div id="bs-lb-rows"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
+      <button class="back-btn" onclick="startBusStop()">Play Again</button>
+      <button class="back-btn" onclick="showPage('division-page')">&#8592; Back to Division</button>
+    </div>
   </div>
 
   <!-- Other Subject Page -->
@@ -1700,6 +1774,100 @@
           ).join('')
         : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish all 10 levels!</div>';
       showPage('ec-leaderboard-page');
+    }
+
+    // ── Bus Stop Division Game ────────────────────────────────────────
+    let bsQIdx=0, bsScore=0, bsCorrectAnswer=0;
+    let bsTimerInterval=null, bsTimerStart=null, bsElapsed=0;
+    const BS_TOTAL = 10;
+
+    function stopBSTimer() { clearInterval(bsTimerInterval); bsTimerInterval=null; }
+
+    function generateBSQuestion() {
+      const divisor  = Math.floor(Math.random() * 8) + 2;          // 2–9
+      const quotient = Math.floor(Math.random() * 79) + 11;        // 11–89  (2-digit answer)
+      const dividend = divisor * quotient;
+      return { divisor, dividend, answer: quotient };
+    }
+
+    function startBusStop() {
+      stopBSTimer();
+      bsQIdx=0; bsScore=0; bsElapsed=0;
+      document.getElementById('bs-timer').textContent = '00:00.0';
+      showPage('busstop-page');
+      renderBSQuestion();
+      bsTimerStart = Date.now();
+      bsTimerInterval = setInterval(() => {
+        bsElapsed = Date.now() - bsTimerStart;
+        document.getElementById('bs-timer').textContent = formatTime(bsElapsed);
+      }, 100);
+    }
+
+    function renderBSQuestion() {
+      const q = generateBSQuestion();
+      bsCorrectAnswer = q.answer;
+      document.getElementById('bs-progress').textContent   = `Question ${bsQIdx+1} of ${BS_TOTAL}`;
+      document.getElementById('bs-score-line').textContent = `Score: ${bsScore}`;
+      document.getElementById('bs-divisor').textContent    = q.divisor;
+      document.getElementById('bs-dividend').textContent   = q.dividend;
+      document.getElementById('bs-answer').value = '';
+      document.getElementById('bs-feedback').textContent = '';
+      document.getElementById('bs-feedback').className   = 'bs-feedback';
+      document.getElementById('bs-check-btn').disabled   = false;
+      // Match spacer width to divisor so answer input aligns above dividend
+      requestAnimationFrame(() => {
+        const divW = document.getElementById('bs-divisor').offsetWidth;
+        document.getElementById('bs-ans-space').style.width = divW + 'px';
+        document.getElementById('bs-answer').focus();
+      });
+    }
+
+    function checkBusStop() {
+      const input = document.getElementById('bs-answer');
+      const val   = parseInt(input.value, 10);
+      const fb    = document.getElementById('bs-feedback');
+      if (isNaN(val)) { fb.textContent = 'Please enter a number.'; fb.className='bs-feedback wrong'; return; }
+
+      document.getElementById('bs-check-btn').disabled = true;
+      if (val === bsCorrectAnswer) {
+        bsScore++;
+        fb.textContent = '✅ Correct!';
+        fb.className   = 'bs-feedback correct';
+      } else {
+        fb.textContent = `❌ The answer was ${bsCorrectAnswer}.`;
+        fb.className   = 'bs-feedback wrong';
+      }
+      bsQIdx++;
+      setTimeout(() => {
+        if (bsQIdx >= BS_TOTAL) {
+          stopBSTimer();
+          const scores = JSON.parse(localStorage.getItem('bs_scores') || '[]');
+          scores.push(bsElapsed); scores.sort((a,b)=>a-b);
+          localStorage.setItem('bs_scores', JSON.stringify(scores));
+          showBSLeaderboard();
+        } else {
+          renderBSQuestion();
+        }
+      }, 1400);
+    }
+
+    // Allow pressing Enter to submit
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('bs-answer').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !document.getElementById('bs-check-btn').disabled) checkBusStop();
+      });
+    });
+
+    function showBSLeaderboard() {
+      const medals = ['🥇','🥈','🥉'];
+      const scores = JSON.parse(localStorage.getItem('bs_scores') || '[]');
+      document.getElementById('bs-your-time').textContent = bsElapsed > 0 ? `Your time: ${formatTime(bsElapsed)}` : '';
+      document.getElementById('bs-lb-rows').innerHTML = scores.slice(0,3).length
+        ? scores.slice(0,3).map((t,i) =>
+            `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`
+          ).join('')
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish 10 questions!</div>';
+      showPage('busstop-lb-page');
     }
   </script>
 
