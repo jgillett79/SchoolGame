@@ -498,6 +498,20 @@
       50%      { box-shadow: 0 0 0 5px rgba(122,255,158,1), 0 0 22px rgba(122,255,158,0.9); }
     }
     .ns-tile.hint { animation: ns-hint-pulse 0.6s ease-in-out infinite; }
+    /* Place Value division game */
+    .pv-layout { display:flex; gap:20px; align-items:center; justify-content:center; flex-wrap:wrap; margin:16px auto; }
+    .pv-chart { border-collapse:collapse; }
+    .pv-chart th, .pv-chart td {
+      border:3px solid rgba(255,255,255,0.7);
+      width:56px; height:52px;
+      text-align:center; vertical-align:middle;
+      font-size:1.6rem; font-weight:800; color:#fff;
+    }
+    .pv-chart th { background:rgba(255,255,255,0.2); font-size:1.1rem; letter-spacing:1px; }
+    .pv-chart td { background:rgba(255,255,255,0.08); }
+    .pv-divider { font-size:2rem; color:rgba(255,255,255,0.4); }
+    .pv-equation { font-size:2.5rem; font-weight:800; color:#fff; letter-spacing:4px; }
+
   </style>
 </head>
 <body>
@@ -839,7 +853,7 @@
     <h1 class="title">Division</h1>
     <div class="button-grid">
       <button class="category-btn btn-busstop"    onclick="startBusStop()">Bus stop</button>
-      <button class="category-btn btn-placevalue" onclick="alert('Place value coming soon!')">Place value</button>
+      <button class="category-btn btn-placevalue" onclick="startPV()">Place value</button>
       <button class="category-btn btn-makeown"    onclick="alert('Make your own coming soon!')">Make your own</button>
       <button class="category-btn btn-mind"       onclick="startMind()">Mind</button>
     </div>
@@ -899,6 +913,54 @@
       <p class="bs-feedback" id="mind-feedback"></p>
     </div>
     <button class="back-btn" style="margin-top:18px" onclick="stopMindTimer();showPage('division-page')">&#8592; Back</button>
+  </div>
+
+  <!-- Place Value Division Game -->
+  <div id="pv-page" class="page">
+    <h1 class="title">Place Value</h1>
+    <div class="bs-topbar">
+      <span class="bs-timer" id="pv-timer">00:00.0</span>
+      <button class="bs-lb-btn" onclick="showPVLeaderboard()">Leaderboard</button>
+    </div>
+    <div class="bs-card">
+      <p class="bs-progress"   id="pv-progress"></p>
+      <p class="bs-score-line" id="pv-score-line"></p>
+      <div class="pv-layout">
+        <!-- Place value chart -->
+        <table class="pv-chart">
+          <tr><th>H</th><th>T</th><th>O</th></tr>
+          <tr>
+            <td id="pv-h"></td>
+            <td id="pv-t"></td>
+            <td id="pv-o"></td>
+          </tr>
+        </table>
+        <span class="pv-divider">│</span>
+        <!-- Division equation -->
+        <span class="pv-equation" id="pv-equation"></span>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-top:8px;">
+        <input class="bs-input" id="pv-answer" type="number" placeholder="?" autocomplete="off" inputmode="numeric"
+               style="width:140px;padding:12px;font-size:1.5rem;font-weight:700;text-align:center;border-radius:12px;border:3px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);color:#fff;outline:none;" />
+        <button class="bs-check" id="pv-check-btn" onclick="checkPV()">Check</button>
+      </div>
+      <p class="bs-feedback" id="pv-feedback"></p>
+    </div>
+    <button class="back-btn" style="margin-top:18px" onclick="stopPVTimer();showPage('division-page')">&#8592; Back</button>
+  </div>
+
+  <!-- Place Value Leaderboard -->
+  <div id="pv-lb-page" class="page">
+    <h1 class="title">Leaderboard</h1>
+    <p id="pv-your-time" style="font-size:1.15rem;color:#fff;font-weight:700;text-align:center;margin-bottom:4px;"></p>
+    <h2 style="color:#b8d9f7;text-align:center;margin-bottom:6px;font-size:1rem;">Did you beat your best time?</h2>
+    <div class="leaderboard-card" style="max-width:420px;width:100%;margin:0 auto 20px;">
+      <div id="pv-lb-rows"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
+      <button class="back-btn" onclick="startPV()">Play Again</button>
+      <button class="back-btn" onclick="showPage('division-page')">&#8592; Back to Division</button>
+    </div>
   </div>
 
   <!-- Mind Leaderboard -->
@@ -1987,6 +2049,97 @@
           ).join('')
         : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish 10 questions!</div>';
       showPage('mind-lb-page');
+    }
+
+    // ── Place Value Division Game (3-digit ÷ 1-digit, exact) ─────────
+    let pvQIdx=0, pvScore=0, pvCorrect=0;
+    let pvTimerInterval=null, pvTimerStart=null, pvElapsed=0;
+    const PV_TOTAL = 10;
+
+    function stopPVTimer() { clearInterval(pvTimerInterval); pvTimerInterval=null; }
+
+    function generatePVQ() {
+      const divisor = Math.floor(Math.random() * 8) + 2;           // 2–9
+      const minQ    = Math.ceil(100 / divisor);
+      const maxQ    = Math.floor(999 / divisor);
+      const quotient = Math.floor(Math.random() * (maxQ - minQ + 1)) + minQ;
+      const dividend = divisor * quotient;                          // 3-digit, exact
+      return { divisor, dividend, answer: quotient };
+    }
+
+    function startPV() {
+      stopPVTimer();
+      pvQIdx=0; pvScore=0; pvElapsed=0;
+      document.getElementById('pv-timer').textContent = '00:00.0';
+      showPage('pv-page');
+      renderPVQ();
+      pvTimerStart = Date.now();
+      pvTimerInterval = setInterval(() => {
+        pvElapsed = Date.now() - pvTimerStart;
+        document.getElementById('pv-timer').textContent = formatTime(pvElapsed);
+      }, 100);
+    }
+
+    function renderPVQ() {
+      const q = generatePVQ();
+      pvCorrect = q.answer;
+      const h = Math.floor(q.dividend / 100);
+      const t = Math.floor((q.dividend % 100) / 10);
+      const o = q.dividend % 10;
+      document.getElementById('pv-progress').textContent   = `Question ${pvQIdx+1} of ${PV_TOTAL}`;
+      document.getElementById('pv-score-line').textContent = `Score: ${pvScore}`;
+      document.getElementById('pv-h').textContent = h;
+      document.getElementById('pv-t').textContent = t;
+      document.getElementById('pv-o').textContent = o;
+      document.getElementById('pv-equation').textContent = `${q.dividend} ÷ ${q.divisor} = ?`;
+      document.getElementById('pv-answer').value = '';
+      document.getElementById('pv-feedback').textContent = '';
+      document.getElementById('pv-feedback').className   = 'bs-feedback';
+      document.getElementById('pv-check-btn').disabled   = false;
+      document.getElementById('pv-answer').focus();
+    }
+
+    function checkPV() {
+      const val = parseInt(document.getElementById('pv-answer').value, 10);
+      const fb  = document.getElementById('pv-feedback');
+      if (isNaN(val)) { fb.textContent='Please enter a number.'; fb.className='bs-feedback wrong'; return; }
+      document.getElementById('pv-check-btn').disabled = true;
+      if (val === pvCorrect) {
+        pvScore++;
+        fb.textContent = '✅ Correct!';           fb.className = 'bs-feedback correct';
+      } else {
+        fb.textContent = `❌ It was ${pvCorrect}.`; fb.className = 'bs-feedback wrong';
+      }
+      pvQIdx++;
+      setTimeout(() => {
+        if (pvQIdx >= PV_TOTAL) {
+          stopPVTimer();
+          const scores = JSON.parse(localStorage.getItem('pv_scores') || '[]');
+          scores.push(pvElapsed); scores.sort((a,b)=>a-b);
+          localStorage.setItem('pv_scores', JSON.stringify(scores));
+          showPVLeaderboard();
+        } else {
+          renderPVQ();
+        }
+      }, 1200);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('pv-answer').addEventListener('keydown', e => {
+        if (e.key==='Enter' && !document.getElementById('pv-check-btn').disabled) checkPV();
+      });
+    });
+
+    function showPVLeaderboard() {
+      const medals = ['🥇','🥈','🥉'];
+      const scores = JSON.parse(localStorage.getItem('pv_scores') || '[]');
+      document.getElementById('pv-your-time').textContent = pvElapsed > 0 ? `Your time: ${formatTime(pvElapsed)}` : '';
+      document.getElementById('pv-lb-rows').innerHTML = scores.slice(0,3).length
+        ? scores.slice(0,3).map((t,i) =>
+            `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`
+          ).join('')
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish 10 questions!</div>';
+      showPage('pv-lb-page');
     }
   </script>
 
