@@ -1493,21 +1493,62 @@
     }
 
     // ── Embedded Clause Game ─────────────────────────────────────────
-    // Levels are ordered: 1-3 highlight the clause, 4-6 place the commas
-    const ecQData = [
-      // Levels 1–5: highlight the embedded clause
-      { type:'highlight', words:['The','dog','which','was','very','muddy','ran','inside'],           clause:[2,3,4,5] },
-      { type:'highlight', words:['The','teacher','who','loves','reading','gave','us','a','book'],    clause:[2,3,4] },
-      { type:'highlight', words:['The','car','which','was','bright','red','stopped','suddenly'],     clause:[2,3,4,5] },
-      { type:'highlight', words:['The','boy','who','won','the','race','smiled','happily'],           clause:[2,3,4,5] },
-      { type:'highlight', words:['The','bird','which','had','blue','feathers','sang','all','day'],   clause:[2,3,4,5] },
-      // Levels 6–10: place the commas
-      { type:'commas',    words:['My','friend','who','lives','next','door','is','very','funny'],     commas:[1,5] },
-      { type:'commas',    words:['The','cat','which','had','orange','fur','sat','on','the','mat'],   commas:[1,5] },
-      { type:'commas',    words:['My','sister','who','is','very','tall','plays','basketball'],        commas:[1,5] },
-      { type:'commas',    words:['The','old','house','which','stood','on','the','hill','was','dark'], commas:[2,7] },
-      { type:'commas',    words:['My','brother','who','plays','football','scored','a','goal'],        commas:[1,4] },
+    // ── Word banks for random sentence generation ────────────────────
+    const ecPeople  = ['teacher','farmer','friend','sister','brother','mother','father','boy','girl','queen','doctor','baker','captain','wizard'];
+    const ecThings  = ['dog','cat','bird','horse','rabbit','lion','car','boat','dragon','castle','spider','wolf'];
+    const ecFamily  = new Set(['sister','brother','mother','father','friend']);
+
+    const ecWhoClauses = [
+      ['who','was','very','tall'],      ['who','loves','reading'],
+      ['who','had','blue','eyes'],      ['who','won','the','race'],
+      ['who','lives','next','door'],    ['who','plays','football'],
+      ['who','is','very','funny'],      ['who','had','curly','hair'],
+      ['who','wore','a','red','hat'],   ['who','carried','a','big','bag'],
+      ['who','knew','the','answer'],    ['who','had','a','loud','voice'],
+      ['who','is','really','clever'],   ['who','loves','to','sing'],
+      ['who','rides','a','bicycle'],    ['who','baked','the','cake'],
     ];
+    const ecWhichClauses = [
+      ['which','was','bright','red'],       ['which','had','orange','fur'],
+      ['which','was','very','old'],         ['which','stood','on','the','hill'],
+      ['which','had','sharp','claws'],      ['which','was','covered','in','mud'],
+      ['which','was','very','small'],       ['which','had','a','long','tail'],
+      ['which','was','made','of','gold'],   ['which','had','been','lost'],
+      ['which','had','black','wings'],      ['which','was','hidden','in','the','cave'],
+      ['which','was','broken','and','rusty'],['which','had','bright','green','eyes'],
+      ['which','sat','by','the','fire'],    ['which','had','spots','on','its','back'],
+    ];
+    const ecVerbPhrases = [
+      ['ran','inside'],             ['sat','on','the','mat'],
+      ['smiled','happily'],         ['stopped','suddenly'],
+      ['fell','asleep'],            ['jumped','over','the','fence'],
+      ['sang','all','day'],         ['made','us','laugh'],
+      ['climbed','the','tree'],     ['gave','us','a','book'],
+      ['scored','a','goal'],        ['won','the','trophy'],
+      ['found','a','treasure'],     ['ate','all','the','food'],
+      ['saved','the','day'],        ['danced','in','the','rain'],
+      ['hid','under','the','bed'],  ['ran','down','the','street'],
+      ['played','in','the','park'], ['looked','at','the','stars'],
+      ['barked','all','night'],     ['flew','over','the','rooftop'],
+    ];
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function generateECQuestion(type) {
+      const usePerson = Math.random() < 0.5;
+      const noun   = pick(usePerson ? ecPeople : ecThings);
+      const article = ecFamily.has(noun) ? 'My' : 'The';
+      const subj   = [article, noun];
+      const clause = pick(usePerson ? ecWhoClauses : ecWhichClauses);
+      const verb   = pick(ecVerbPhrases);
+      const words  = [...subj, ...clause, ...verb];
+      const clauseIndices = Array.from({length: clause.length}, (_,i) => subj.length + i);
+      const commas = [subj.length - 1, subj.length + clause.length - 1];
+      return type === 'highlight'
+        ? { type:'highlight', words, clause:clauseIndices }
+        : { type:'commas',    words, commas };
+    }
+
     let ecQIdx=0, ecScore=0, ecSelected=new Set(), ecPlaced=new Set();
     let ecTimerInterval=null, ecTimerStart=null, ecElapsed=0;
     let ecRound=[];
@@ -1518,7 +1559,11 @@
 
     function startECGame() {
       stopECTimer();
-      ecRound = [...ecQData].sort(()=>Math.random()-0.5);
+      // Generate 5 highlight + 5 comma questions, then shuffle
+      const qs = [];
+      for (let i=0; i<5; i++) qs.push(generateECQuestion('highlight'));
+      for (let i=0; i<5; i++) qs.push(generateECQuestion('commas'));
+      ecRound = qs.sort(()=>Math.random()-0.5);
       ecQIdx=0; ecScore=0; ecElapsed=0;
       document.getElementById('ecg-timer').textContent = '00:00.0';
       showPage('ec-game-page');
