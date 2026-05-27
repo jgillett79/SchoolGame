@@ -841,7 +841,7 @@
       <button class="category-btn btn-busstop"    onclick="startBusStop()">Bus stop</button>
       <button class="category-btn btn-placevalue" onclick="alert('Place value coming soon!')">Place value</button>
       <button class="category-btn btn-makeown"    onclick="alert('Make your own coming soon!')">Make your own</button>
-      <button class="category-btn btn-mind"       onclick="alert('Mind coming soon!')">Mind</button>
+      <button class="category-btn btn-mind"       onclick="startMind()">Mind</button>
     </div>
     <button class="back-btn" onclick="showPage('math-page')">&#8592; Back to Math</button>
   </div>
@@ -879,6 +879,42 @@
   </div>
 
   <!-- Bus Stop Leaderboard -->
+  <!-- Mind Division Game -->
+  <div id="mind-page" class="page">
+    <h1 class="title">Mind</h1>
+    <div class="bs-topbar">
+      <span class="bs-timer" id="mind-timer">00:00.0</span>
+      <button class="bs-lb-btn" onclick="showMindLeaderboard()">Leaderboard</button>
+    </div>
+    <div class="bs-card">
+      <p class="bs-progress"   id="mind-progress"></p>
+      <p class="bs-score-line" id="mind-score-line"></p>
+      <p style="color:#dde;font-size:0.95rem;margin-bottom:18px;">Do it in your head!</p>
+      <p id="mind-question" style="font-size:3rem;font-weight:800;color:#fff;margin-bottom:20px;letter-spacing:4px;"></p>
+      <div class="bs-input-row" style="display:flex;gap:12px;justify-content:center;align-items:center;">
+        <input class="bs-input" id="mind-answer" type="number" placeholder="?" autocomplete="off" inputmode="numeric"
+               style="width:140px;padding:12px;font-size:1.5rem;font-weight:700;text-align:center;border-radius:12px;border:3px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);color:#fff;outline:none;" />
+        <button class="bs-check" id="mind-check-btn" onclick="checkMind()">Check</button>
+      </div>
+      <p class="bs-feedback" id="mind-feedback"></p>
+    </div>
+    <button class="back-btn" style="margin-top:18px" onclick="stopMindTimer();showPage('division-page')">&#8592; Back</button>
+  </div>
+
+  <!-- Mind Leaderboard -->
+  <div id="mind-lb-page" class="page">
+    <h1 class="title">Leaderboard</h1>
+    <p id="mind-your-time" style="font-size:1.15rem;color:#fff;font-weight:700;text-align:center;margin-bottom:4px;"></p>
+    <h2 style="color:#b8d9f7;text-align:center;margin-bottom:6px;font-size:1rem;">Did you beat your best time?</h2>
+    <div class="leaderboard-card" style="max-width:420px;width:100%;margin:0 auto 20px;">
+      <div id="mind-lb-rows"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
+      <button class="back-btn" onclick="startMind()">Play Again</button>
+      <button class="back-btn" onclick="showPage('division-page')">&#8592; Back to Division</button>
+    </div>
+  </div>
+
   <div id="busstop-lb-page" class="page">
     <h1 class="title">Leaderboard</h1>
     <p id="bs-your-time" style="font-size:1.15rem;color:#fff;font-weight:700;text-align:center;margin-bottom:4px;"></p>
@@ -1868,6 +1904,89 @@
           ).join('')
         : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish 10 questions!</div>';
       showPage('busstop-lb-page');
+    }
+
+    // ── Mind Division Game (2-digit ÷ 1-digit, exact) ────────────────
+    let mindQIdx=0, mindScore=0, mindCorrect=0;
+    let mindTimerInterval=null, mindTimerStart=null, mindElapsed=0;
+    const MIND_TOTAL = 10;
+
+    function stopMindTimer() { clearInterval(mindTimerInterval); mindTimerInterval=null; }
+
+    function generateMindQ() {
+      const divisor  = Math.floor(Math.random() * 8) + 2;   // 2–9
+      const quotient = Math.floor(Math.random() * 9)  + 2;  // 2–10 → gives 2-digit dividends
+      const dividend = divisor * quotient;                   // always exact, always 2 digits
+      return { dividend, divisor, answer: quotient };
+    }
+
+    function startMind() {
+      stopMindTimer();
+      mindQIdx=0; mindScore=0; mindElapsed=0;
+      document.getElementById('mind-timer').textContent = '00:00.0';
+      showPage('mind-page');
+      renderMindQ();
+      mindTimerStart = Date.now();
+      mindTimerInterval = setInterval(() => {
+        mindElapsed = Date.now() - mindTimerStart;
+        document.getElementById('mind-timer').textContent = formatTime(mindElapsed);
+      }, 100);
+    }
+
+    function renderMindQ() {
+      const q = generateMindQ();
+      mindCorrect = q.answer;
+      document.getElementById('mind-progress').textContent   = `Question ${mindQIdx+1} of ${MIND_TOTAL}`;
+      document.getElementById('mind-score-line').textContent = `Score: ${mindScore}`;
+      document.getElementById('mind-question').textContent   = `${q.dividend} ÷ ${q.divisor} = ?`;
+      document.getElementById('mind-answer').value = '';
+      document.getElementById('mind-feedback').textContent = '';
+      document.getElementById('mind-feedback').className   = 'bs-feedback';
+      document.getElementById('mind-check-btn').disabled   = false;
+      document.getElementById('mind-answer').focus();
+    }
+
+    function checkMind() {
+      const val = parseInt(document.getElementById('mind-answer').value, 10);
+      const fb  = document.getElementById('mind-feedback');
+      if (isNaN(val)) { fb.textContent='Please enter a number.'; fb.className='bs-feedback wrong'; return; }
+      document.getElementById('mind-check-btn').disabled = true;
+      if (val === mindCorrect) {
+        mindScore++;
+        fb.textContent = '✅ Correct!';   fb.className = 'bs-feedback correct';
+      } else {
+        fb.textContent = `❌ It was ${mindCorrect}.`; fb.className = 'bs-feedback wrong';
+      }
+      mindQIdx++;
+      setTimeout(() => {
+        if (mindQIdx >= MIND_TOTAL) {
+          stopMindTimer();
+          const scores = JSON.parse(localStorage.getItem('mind_scores') || '[]');
+          scores.push(mindElapsed); scores.sort((a,b)=>a-b);
+          localStorage.setItem('mind_scores', JSON.stringify(scores));
+          showMindLeaderboard();
+        } else {
+          renderMindQ();
+        }
+      }, 1200);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('mind-answer').addEventListener('keydown', e => {
+        if (e.key==='Enter' && !document.getElementById('mind-check-btn').disabled) checkMind();
+      });
+    });
+
+    function showMindLeaderboard() {
+      const medals = ['🥇','🥈','🥉'];
+      const scores = JSON.parse(localStorage.getItem('mind_scores') || '[]');
+      document.getElementById('mind-your-time').textContent = mindElapsed > 0 ? `Your time: ${formatTime(mindElapsed)}` : '';
+      document.getElementById('mind-lb-rows').innerHTML = scores.slice(0,3).length
+        ? scores.slice(0,3).map((t,i) =>
+            `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`
+          ).join('')
+        : '<div class="leaderboard-row" style="justify-content:center;color:#b8d9f7;">No times yet — finish 10 questions!</div>';
+      showPage('mind-lb-page');
     }
   </script>
 
