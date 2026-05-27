@@ -628,6 +628,7 @@
   <!-- Embedded Clause Leaderboard -->
   <div id="ec-leaderboard-page" class="page">
     <h1 class="title">Leaderboard</h1>
+    <p id="ec-your-time" style="font-size:1.15rem;color:#fff;font-weight:700;text-align:center;margin-bottom:4px;"></p>
     <h2 style="color:#b8d9f7;text-align:center;margin-bottom:6px;font-size:1rem;">Did you beat your best time?</h2>
     <div class="leaderboard-card" style="max-width:420px;width:100%;margin:0 auto 20px;">
       <div id="ec-leaderboard-rows"></div>
@@ -1673,6 +1674,8 @@
     function showECLeaderboard() {
       const medals = ['🥇','🥈','🥉'];
       const scores = JSON.parse(localStorage.getItem('ec_scores') || '[]');
+      const yourTimeEl = document.getElementById('ec-your-time');
+      yourTimeEl.textContent = ecElapsed > 0 ? `Your time: ${formatTime(ecElapsed)}` : '';
       document.getElementById('ec-leaderboard-rows').innerHTML = scores.slice(0,3).length
         ? scores.slice(0,3).map((t,i) =>
             `<div class="leaderboard-row"><span><span class="rank">${medals[i]}</span> #${i+1}</span><span>${formatTime(t)}</span></div>`
