@@ -71,6 +71,12 @@
     .btn-multiplication { background: linear-gradient(135deg,#27c47a,#159552); }
     .btn-division       { background: linear-gradient(135deg,#a855f7,#7c22d4); }
 
+    /* Division sub-menu */
+    .btn-busstop   { background: linear-gradient(135deg,#e84393,#c0166f); }
+    .btn-placevalue{ background: linear-gradient(135deg,#f4a020,#d07a00); }
+    .btn-makeown   { background: linear-gradient(135deg,#27c47a,#159552); }
+    .btn-mind      { background: linear-gradient(135deg,#a855f7,#7c22d4); }
+
     /* Addition sub-menu */
     .btn-numbersplash  { background: linear-gradient(135deg,#e84393,#c0166f); }
     .btn-speedmath     { background: linear-gradient(135deg,#f4a020,#d07a00); }
@@ -795,9 +801,21 @@
       <button class="category-btn btn-addition"       onclick="showPage('addition-page')">Addition</button>
       <button class="category-btn btn-subtraction"    onclick="alert('Subtraction coming soon!')">Subtraction</button>
       <button class="category-btn btn-multiplication" onclick="alert('Multiplication coming soon!')">Multiplication</button>
-      <button class="category-btn btn-division"       onclick="alert('Division coming soon!')">Division</button>
+      <button class="category-btn btn-division"       onclick="showPage('division-page')">Division</button>
     </div>
     <button class="back-btn" onclick="showPage('front-page')">&#8592; Back to Menu</button>
+  </div>
+
+  <!-- Division Sub-Menu -->
+  <div id="division-page" class="page">
+    <h1 class="title">Division</h1>
+    <div class="button-grid">
+      <button class="category-btn btn-busstop"    onclick="alert('Bus stop coming soon!')">Bus stop</button>
+      <button class="category-btn btn-placevalue" onclick="alert('Place value coming soon!')">Place value</button>
+      <button class="category-btn btn-makeown"    onclick="alert('Make your own coming soon!')">Make your own</button>
+      <button class="category-btn btn-mind"       onclick="alert('Mind coming soon!')">Mind</button>
+    </div>
+    <button class="back-btn" onclick="showPage('math-page')">&#8592; Back to Math</button>
   </div>
 
   <!-- Other Subject Page -->
